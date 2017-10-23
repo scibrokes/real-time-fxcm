@@ -27,18 +27,36 @@ QuantTools_settings(settings)
 store_finam_data()
 get_iqfeed_data(symbol, from, to, period = '5min', local = TRUE)
 
-llply(seq(1, week(now())), function(i) {
-  if(!dir.exists('./data/2017')) dir.create('./data/2017')
-  if(!file.exists(paste0('./data/2017/', i, '.csv.gz'))) {
-    download.file(paste0('https://tickdata.fxcorporate.com/EURUSD/2017/', i, '.csv.gz'), 
-                  destfile = paste0('./data/2017/', i, '.csv.gz'))
-  }
-  if(!file.exists(paste0('./data/2017/', i, '.csv'))) {
-    gunzip(paste0('./data/2017/', i, '.csv.gz'), remove = FALSE)
+## ====================================================================
+## read tick-data
+llply(seq(1, week(now(tzone = 'UTC'))), function(i) {
+  if(!dir.exists('./data/EURUSD/2017')) dir.create('./data/EURUSD/2017')
+  if(!file.exists(paste0('./data/EURUSD/2017/', i, '.csv.gz'))) {
+    tryCatch(download.file(paste0('https://tickdata.fxcorporate.com/EURUSD/2017/', i, '.csv.gz'), 
+                  destfile = paste0('./data/EURUSD/2017/', i, '.csv.gz')), 
+             error = function(e) NULL)
+  } else {
+    if(!file.exists(paste0('./data/EURUSD/2017/', i, '.csv'))) {
+      gunzip(paste0('./data/EURUSD/2017/', i, '.csv.gz'), remove = FALSE)
+    }
   }
 })
 
 
-llply(seq(1, week(now())), function(i) {
-  tryCatch(fread(paste0('./data/2017/', i, '.csv')), error = function(e) NA)
+fx <- llply(seq(1, week(now(tzone = 'UTC'))), function(i) {
+  if(file.exists(paste0('./data/EURUSD/2017/', i, '.csv'))) {
+    file = tryCatch(
+      read.csv(paste0('./data/EURUSD/2017/', i, '.csv'), fileEncoding = 'UTF-16LE'), 
+      error = function(e) NA)
+    cat(paste0('\nRead.. ./data/EURUSD/2017/', i, '.csv'))
+    file %>% tbl_df
+  } else {
+    cat(paste0('\n./data/EURUSD/2017/', i, '.csv does not exist.'))
+  }
 })
+
+
+
+
+
+
