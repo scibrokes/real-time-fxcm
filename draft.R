@@ -55,8 +55,8 @@ fx <- llply(seq(1, week(now(tzone = 'UTC'))), function(i) {
   }
 })
 
+fx <- bind_rows(fx)
 
-
-
+fread(paste0('./data/HDD Basic/', dir('./data/HDD Basic/')))
 
 

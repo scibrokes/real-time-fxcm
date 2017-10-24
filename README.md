@@ -2,7 +2,9 @@
 
 ## 1. Data
 
-You can get the tick data via [**FXCMTickData**](https://github.com/FXCMAPI/FXCMTickData).
+### 1.1 FXCM Weekly Ticked Data
+
+  You can get the tick data via [**FXCMTickData**](https://github.com/FXCMAPI/FXCMTickData).
 
   FXCM is proud to continue the drive for more openness in data.
 
@@ -29,6 +31,11 @@ You can get the tick data via [**FXCMTickData**](https://github.com/FXCMAPI/FXCM
 <https://tickdata.fxcorporate.com/EURUSD/2015/1.csv.gz>
 
 *All timestamps are in UTC.*
+
+### 1.2 Historical Data Downloader Basic
+
+  Besides, you can get the historical price via [**Historical Spreads**](https://www.fxcm.com/uk/why-fxcm/execution/historical-spreads/).
+
 
 ## 2. Web Application
 

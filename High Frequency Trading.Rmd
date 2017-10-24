@@ -1,0 +1,119 @@
+---
+title: "<img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/HFT.jpg' width='840'>"
+subtitle: "[<span style='color:blue'>High Frequency Trading</span>](https://github.com/scibrokes/real-time-fxcm)"
+author: "[<span style='color:blue'>®γσ, Lian Hu</span>](https://englianhu.github.io/) <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/ENG.jpg' width='24'> <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/RYO.jpg?raw=true' width='24'>白戸則道®"
+date: "`r Sys.Date()`"
+output:
+  tufte::tufte_html:
+    toc: yes
+    toc_depth: 4
+    self_contained: no
+  tufte::tufte_book:
+    citation_package: natbib
+    latex_engine: xelatex
+  tufte::tufte_handout:
+    citation_package: natbib
+    latex_engine: xelatex
+link-citations: yes
+---
+
+```{r setup}
+#'@ rm(list = ls(all = TRUE))
+
+suppressPackageStartupMessages(library('BBmisc'))
+pkgs <- c('knitr', 'kableExtra', 'tint', 'devtools', 'lubridate', 'data.table', 'quantmod', 'plyr', 'stringr', 'magrittr', 'dplyr', 'tidyverse', 'htmltools', 'highcharter', 'googleVis', 'formattable', 'DT', 'fst')
+
+#'@ funs <- c('plotChart2.R')
+#'@ 
+suppressAll(lib(pkgs))
+#'@ l_ply(paste0('./function/', funs), source)
+
+## Set option to below if you want to plot an independent webpage with graph 
+#'@ op <- options(gvis.plot.tag=NULL)
+op <- options(gvis.plot.tag = 'chart')
+options(gvis.plot.tag = 'chart', warn = -1)
+
+rm(pkgs)
+```
+
+# 1. Introduction
+
+  By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to model few Kelly funds for financial trading. Today I am zooming on the Kellys fund.
+
+# 2. Data
+
+```{r read-data}
+```
+
+```{r arrange-data}
+
+```
+
+# 3. Model Comparison
+
+  Here we plot a graph for high volume data points.
+
+  - [Question: R Plotting Line Graph With Large Dataset](https://www.biostars.org/p/47288/)
+  - [More efficient plot functions in R when millions of points are present?](https://stats.stackexchange.com/questions/7348/more-efficient-plot-functions-in-r-when-millions-of-points-are-present?answertab=votes#tab-top)
+  - [Visualizing Big Data with R](https://beta.rstudioconnect.com/jmcphers/datavis-talk/datavis.html)
+
+```{r graph-Hi}
+```
+
+```{r}
+```
+
+```{r graph-Lo}
+```
+
+```{r graph-Cl}
+```
+
+
+# 4. Conclusion
+
+
+```{r stopPar, echo = FALSE}
+## Set options back to original options
+options(op)
+options(warn = 0)
+```
+
+# 5. Appendix
+
+## 5.1 Documenting File Creation 
+
+  It's useful to record some information about how your file was created.
+
+  - File creation date: 2017-10-16
+  - File latest updated date: `r Sys.Date()`
+  - `r R.version.string`
+  - R version (short form): `r getRversion()`
+  - [<span style='color:blue'>**rmarkdown** package</span>](https://github.com/rstudio/rmarkdown) version: `r packageVersion('rmarkdown')`
+  - [<span style='color:blue'>**tufte** package</span>](https://github.com/rstudio/tufte) version: `r packageVersion('tufte')`
+  - File version: 1.0.1
+  - Author Profile: [<span style='color:blue'>®γσ, Eng Lian Hu</span>](https://beta.rstudioconnect.com/englianhu/ryo-eng/)
+  - GitHub: [<span style='color:blue'>Source Code</span>](https://github.com/englianhu/binary.com-interview-question)
+  - Additional session information
+  
+```{r info, echo = FALSE, warning = FALSE, results = 'asis'}
+suppressMessages(require('dplyr', quietly = TRUE))
+suppressMessages(require('formattable', quietly = TRUE))
+
+lubridate::now()
+sys1 <- devtools::session_info()$platform %>% unlist %>% data.frame(Category = names(.), session_info = .)
+rownames(sys1) <- NULL
+sys1 %>% formattable %>% as.htmlwidget
+
+data.frame(Sys.info()) %>% mutate(Category = rownames(.)) %>% .[2:1] %>% rename(Category = Category, Sys.info =  Sys.info..) %>% formattable %>% as.htmlwidget
+
+rm(sys1)
+```
+
+## 5.2 Reference
+
+  01. [<span style='color:blue'>**Betting Strategy and Model Validation - Part II** *by ®γσ, Lian Hu (2017)*</span>](https://englianhu.github.io/2017/10/Betting_Strategy_and_Model_Validation_-_Part_02/)
+  02. [<span style='color:blue'>**binary.com : Job Application - Quantitative Analyst** *by ®γσ, Lian Hu (2017)*</span>](https://github.com/englianhu/binary.com-interview-question)
+  03. [<span style='color:blue'>**What is high-frequency trading?** *by Investopedia Staff*</span>](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp)
+
+**Powered by - Copyright® Intellectual Property Rights of <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/oda-army2.jpg?raw=true' width='24'> [<span style='color:blue'>Scibrokes®</span>](http://www.scibrokes.com)個人の経営企業**

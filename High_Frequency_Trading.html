@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="®γσ, Lian Hu  白戸則道®" />
+
+<meta name="date" content="2017-10-24" />
+
+<title></title>
+
+<link href="High_Frequency_Trading_files/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
+<link href="High_Frequency_Trading_files/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="High_Frequency_Trading_files/highlightjs-1.1/highlight.js"></script>
+<script src="High_Frequency_Trading_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="High_Frequency_Trading_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="High_Frequency_Trading_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="High_Frequency_Trading_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="High_Frequency_Trading_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="High_Frequency_Trading_files/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="High_Frequency_Trading_files/formattable_widget-binding-0.2.0.1/formattable_widget.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore"><img src='https://raw.githubusercontent.com/scibrokes/betting-strategy-and-model-validation/master/figure/SmartOdds.png' width='840'></h1>
+<h3 class="subtitle"><em><a href="https://github.com/scibrokes/betting-strategy-and-model-validation"><span style="color:blue">Betting Strategy and Model Validation II (Extention)</span></a></em></h3>
+<h4 class="author"><em><a href="https://englianhu.github.io/"><span style="color:blue">®γσ, Lian Hu</span></a> <img src='https://raw.githubusercontent.com/scibrokes/betting-strategy-and-model-validation/master/www/ENG.jpg' width='24'> <img src='https://raw.githubusercontent.com/scibrokes/betting-strategy-and-model-validation/master/www/RYO.jpg?raw=true' width='24'>白戸則道®</em></h4>
+<h4 class="date"><em>2017-10-24</em></h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction">1. Introduction</a></li>
+<li><a href="#data">2. Data</a></li>
+<li><a href="#model-comparison">3. Model Comparison</a></li>
+<li><a href="#conclusion">4. Conclusion</a></li>
+<li><a href="#appendix">5. Appendix</a><ul>
+<li><a href="#documenting-file-creation">5.1 Documenting File Creation</a></li>
+<li><a href="#reference">5.2 Reference</a></li>
+</ul></li>
+</ul>
+</div>
+
+<pre class="r"><code>#&#39;@ rm(list = ls(all = TRUE))
+
+suppressPackageStartupMessages(library(&#39;BBmisc&#39;))
+pkgs &lt;- c(&#39;knitr&#39;, &#39;kableExtra&#39;, &#39;tint&#39;, &#39;devtools&#39;, &#39;lubridate&#39;, &#39;data.table&#39;, &#39;quantmod&#39;, &#39;plyr&#39;, &#39;stringr&#39;, &#39;magrittr&#39;, &#39;dplyr&#39;, &#39;tidyverse&#39;, &#39;htmltools&#39;, &#39;highcharter&#39;, &#39;googleVis&#39;, &#39;formattable&#39;, &#39;DT&#39;, &#39;fst&#39;)
+
+#&#39;@ funs &lt;- c(&#39;plotChart2.R&#39;)
+#&#39;@ 
+suppressAll(lib(pkgs))
+#&#39;@ l_ply(paste0(&#39;./function/&#39;, funs), source)
+
+## Set option to below if you want to plot an independent webpage with graph 
+#&#39;@ op &lt;- options(gvis.plot.tag=NULL)
+op &lt;- options(gvis.plot.tag = &#39;chart&#39;)
+options(gvis.plot.tag = &#39;chart&#39;, warn = -1)
+
+rm(pkgs)</code></pre>
+<div id="introduction" class="section level1">
+<h1>1. Introduction</h1>
+<p>By refer to <em>Ryo Eng Lian Hu (2017)</em><label for="tufte-sn-1" class="margin-toggle sidenote-number">1</label><input type="checkbox" id="tufte-sn-1" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">1</span> reference paper 1</span>, I tried to model few Kelly funds for financial trading. Today I am zooming on the Kellys fund.</p>
+</div>
+<div id="data" class="section level1">
+<h1>2. Data</h1>
+</div>
+<div id="model-comparison" class="section level1">
+<h1>3. Model Comparison</h1>
+<p>Here we plot a graph for high volume data points.</p>
+<ul>
+<li><a href="https://www.biostars.org/p/47288/">Question: R Plotting Line Graph With Large Dataset</a></li>
+<li><a href="https://stats.stackexchange.com/questions/7348/more-efficient-plot-functions-in-r-when-millions-of-points-are-present?answertab=votes#tab-top">More efficient plot functions in R when millions of points are present?</a></li>
+<li><a href="https://beta.rstudioconnect.com/jmcphers/datavis-talk/datavis.html">Visualizing Big Data with R</a></li>
+</ul>
+</div>
+<div id="conclusion" class="section level1">
+<h1>4. Conclusion</h1>
+</div>
+<div id="appendix" class="section level1">
+<h1>5. Appendix</h1>
+<div id="documenting-file-creation" class="section level2">
+<h2>5.1 Documenting File Creation</h2>
+<p>It’s useful to record some information about how your file was created.</p>
+<ul>
+<li>File creation date: 2017-10-16</li>
+<li>File latest updated date: 2017-10-24</li>
+<li>R version 3.4.2 (2017-09-28)</li>
+<li>R version (short form): 3.4.2</li>
+<li><a href="https://github.com/rstudio/rmarkdown"><span style="color:blue"><strong>rmarkdown</strong> package</span></a> version: 1.6.0.9004</li>
+<li><a href="https://github.com/rstudio/tufte"><span style="color:blue"><strong>tufte</strong> package</span></a> version: 0.2</li>
+<li>File version: 1.0.1</li>
+<li>Author Profile: <a href="https://beta.rstudioconnect.com/englianhu/ryo-eng/"><span style="color:blue">®γσ, Eng Lian Hu</span></a></li>
+<li>GitHub: <a href="https://github.com/englianhu/binary.com-interview-question"><span style="color:blue">Source Code</span></a></li>
+<li>Additional session information</li>
+</ul>
+<p>[1] “2017-10-24 18:01:29 JST” <div id="htmlwidget-3f504abf961f0052b47d" class="formattable_widget html-widget" style="width:100%;height:480px;" width="100%" height="480"></div>
+<script type="application/json" data-for="htmlwidget-3f504abf961f0052b47d">{"x":{"html":"<table class=\"table table-condensed\">\n <thead>\n  <tr>\n   <th style=\"text-align:right;\"> Category <\/th>\n   <th style=\"text-align:right;\"> session_info <\/th>\n  <\/tr>\n <\/thead>\n<tbody>\n  <tr>\n   <td style=\"text-align:right;\"> version <\/td>\n   <td style=\"text-align:right;\"> R version 3.4.2 (2017-09-28) <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> os <\/td>\n   <td style=\"text-align:right;\"> Windows 10 x64 <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> system <\/td>\n   <td style=\"text-align:right;\"> x86_64, mingw32 <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> ui <\/td>\n   <td style=\"text-align:right;\"> RTerm <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> language <\/td>\n   <td style=\"text-align:right;\"> en <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> collate <\/td>\n   <td style=\"text-align:right;\"> Japanese_Japan.932 <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> tz <\/td>\n   <td style=\"text-align:right;\"> Asia/Tokyo <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> date <\/td>\n   <td style=\"text-align:right;\"> 2017-10-24 <\/td>\n  <\/tr>\n<\/tbody>\n<\/table>"},"evals":[],"jsHooks":[]}</script><div id="htmlwidget-cc388691fad93aca258a" class="formattable_widget html-widget" style="width:100%;height:480px;" width="100%" height="480"></div>
+<script type="application/json" data-for="htmlwidget-cc388691fad93aca258a">{"x":{"html":"<table class=\"table table-condensed\">\n <thead>\n  <tr>\n   <th style=\"text-align:right;\"> Category <\/th>\n   <th style=\"text-align:right;\"> Sys.info <\/th>\n  <\/tr>\n <\/thead>\n<tbody>\n  <tr>\n   <td style=\"text-align:right;\"> sysname <\/td>\n   <td style=\"text-align:right;\"> Windows <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> release <\/td>\n   <td style=\"text-align:right;\"> 10 x64 <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> version <\/td>\n   <td style=\"text-align:right;\"> build 14393 <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> nodename <\/td>\n   <td style=\"text-align:right;\"> RSTUDIO-SCIBROK <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> machine <\/td>\n   <td style=\"text-align:right;\"> x86-64 <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> login <\/td>\n   <td style=\"text-align:right;\"> scibr <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> user <\/td>\n   <td style=\"text-align:right;\"> scibr <\/td>\n  <\/tr>\n  <tr>\n   <td style=\"text-align:right;\"> effective_user <\/td>\n   <td style=\"text-align:right;\"> scibr <\/td>\n  <\/tr>\n<\/tbody>\n<\/table>"},"evals":[],"jsHooks":[]}</script></p>
+</div>
+<div id="reference" class="section level2">
+<h2>5.2 Reference</h2>
+<ol style="list-style-type: decimal">
+<li><a href="https://englianhu.github.io/2017/10/Betting_Strategy_and_Model_Validation_-_Part_02/"><span style="color:blue"><strong>Betting Strategy and Model Validation - Part II</strong> <em>by ®γσ, Lian Hu (2017)</em></span></a></li>
+<li><a href="https://github.com/englianhu/binary.com-interview-question"><strong>binary.com : Job Application - Quantitative Analyst</strong> <em>by ®γσ, Lian Hu (2017)</em></a></li>
+<li><a href="http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp"><strong>What is high-frequency trading?</strong> <em>by Investopedia Staff</em></a></li>
+</ol>
+<p><strong>Powered by - Copyright® Intellectual Property Rights of <img src='https://raw.githubusercontent.com/englianhu/binary.com-interview-question/master/www/oda-army2.jpg?raw=true' width='24'> <a href="http://www.scibrokes.com"><span style="color:blue">Scibrokes®</span></a>個人の経営企業</strong></p>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
