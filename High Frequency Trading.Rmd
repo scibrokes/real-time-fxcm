@@ -1,27 +1,20 @@
 ---
 title: "<img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/HFT.jpg' width='840'>"
-subtitle: "[<span style='color:blue'>High Frequency Trading</span>](https://github.com/scibrokes/real-time-fxcm)"
-author: "[<span style='color:blue'>®γσ, Lian Hu</span>](https://englianhu.github.io/) <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/ENG.jpg' width='24'> <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/RYO.jpg?raw=true' width='24'>白戸則道®"
+subtitle: "[High Frequency Trading](https://github.com/scibrokes/real-time-fxcm)"
+author: "[®γσ, Lian Hu](https://englianhu.github.io/) <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/ENG.jpg' width='24'> <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/RYO.jpg?raw=true' width='24'>白戸則道®"
 date: "`r Sys.Date()`"
 output:
-  tufte::tufte_html:
+  html_notebook:
     toc: yes
     toc_depth: 4
-    self_contained: no
-  tufte::tufte_book:
-    citation_package: natbib
-    latex_engine: xelatex
-  tufte::tufte_handout:
-    citation_package: natbib
-    latex_engine: xelatex
-link-citations: yes
 ---
 
 ```{r setup}
 #'@ rm(list = ls(all = TRUE))
 
 suppressPackageStartupMessages(library('BBmisc'))
-pkgs <- c('knitr', 'kableExtra', 'tint', 'devtools', 'lubridate', 'data.table', 'quantmod', 'plyr', 'stringr', 'magrittr', 'dplyr', 'tidyverse', 'htmltools', 'highcharter', 'googleVis', 'formattable', 'DT', 'fst')
+pkgs <- c('knitr', 'kableExtra', 'tint', 'devtools', 'lubridate', 'data.table', 'quantmod', 'shiny', 'R.utils', 'memoise', 'magrittr', 'plyr', 'dplyr', 'stringr', 'TFX', 'quantmod', 
+'QuantTools', 'rugarch', 'tidyverse', 'htmltools', 'highcharter', 'googleVis', 'formattable', 'DT', 'reticulate')
 
 #'@ funs <- c('plotChart2.R')
 #'@ 
@@ -31,18 +24,23 @@ suppressAll(lib(pkgs))
 ## Set option to below if you want to plot an independent webpage with graph 
 #'@ op <- options(gvis.plot.tag=NULL)
 op <- options(gvis.plot.tag = 'chart')
-options(gvis.plot.tag = 'chart', warn = -1)
+options(warn = -1)
 
 rm(pkgs)
 ```
 
 # 1. Introduction
 
+  High frequency trading is an automated trading platform used by large investment banks, hedge funds and institutional investors which utilizes powerful computers to transact a large number of orders at extremely high speeds. These high frequency trading platforms allow traders to execute millions of orders and scan multiple markets and exchanges in a matter of seconds, thus giving the institutions that use the platforms a huge advantage in the open market.
+
+  Read more: [What is high-frequency trading?](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp#ixzz4wVO6j7e4)
+
   By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to model few Kelly funds for financial trading. Today I am zooming on the Kellys fund.
 
 # 2. Data
 
-```{r read-data}
+```{python read-data}
+import_from_path('selenium')
 ```
 
 ```{r arrange-data}
@@ -89,11 +87,11 @@ options(warn = 0)
   - File latest updated date: `r Sys.Date()`
   - `r R.version.string`
   - R version (short form): `r getRversion()`
-  - [<span style='color:blue'>**rmarkdown** package</span>](https://github.com/rstudio/rmarkdown) version: `r packageVersion('rmarkdown')`
-  - [<span style='color:blue'>**tufte** package</span>](https://github.com/rstudio/tufte) version: `r packageVersion('tufte')`
+  - [**rmarkdown** package](https://github.com/rstudio/rmarkdown) version: `r packageVersion('rmarkdown')`
+  - [**tufte** package](https://github.com/rstudio/tufte) version: `r packageVersion('tufte')`
   - File version: 1.0.1
-  - Author Profile: [<span style='color:blue'>®γσ, Eng Lian Hu</span>](https://beta.rstudioconnect.com/englianhu/ryo-eng/)
-  - GitHub: [<span style='color:blue'>Source Code</span>](https://github.com/englianhu/binary.com-interview-question)
+  - Author Profile: [®γσ, Eng Lian Hu](https://beta.rstudioconnect.com/englianhu/ryo-eng/)
+  - GitHub: [Source Code](https://github.com/englianhu/binary.com-interview-question)
   - Additional session information
   
 ```{r info, echo = FALSE, warning = FALSE, results = 'asis'}
@@ -112,8 +110,8 @@ rm(sys1)
 
 ## 5.2 Reference
 
-  01. [<span style='color:blue'>**Betting Strategy and Model Validation - Part II** *by ®γσ, Lian Hu (2017)*</span>](https://englianhu.github.io/2017/10/Betting_Strategy_and_Model_Validation_-_Part_02/)
-  02. [<span style='color:blue'>**binary.com : Job Application - Quantitative Analyst** *by ®γσ, Lian Hu (2017)*</span>](https://github.com/englianhu/binary.com-interview-question)
-  03. [<span style='color:blue'>**What is high-frequency trading?** *by Investopedia Staff*</span>](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp)
+  01. [**Betting Strategy and Model Validation - Part II** *by ®γσ, Lian Hu (2017)*](https://englianhu.github.io/2017/10/Betting_Strategy_and_Model_Validation_-_Part_02/)
+  02. [**binary.com : Job Application - Quantitative Analyst** *by ®γσ, Lian Hu (2017)*](https://github.com/englianhu/binary.com-interview-question)
+  03. [**What is high-frequency trading?** *by Investopedia Staff*](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp)
 
-**Powered by - Copyright® Intellectual Property Rights of <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/oda-army2.jpg?raw=true' width='24'> [<span style='color:blue'>Scibrokes®</span>](http://www.scibrokes.com)個人の経営企業**
+**Powered by - Copyright® Intellectual Property Rights of <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/oda-army2.jpg?raw=true' width='24'> [Scibrokes®](http://www.scibrokes.com)個人の経営企業**

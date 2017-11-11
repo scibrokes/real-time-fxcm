@@ -60,3 +60,9 @@ fx <- bind_rows(fx)
 fread(paste0('./data/HDD Basic/', dir('./data/HDD Basic/')))
 
 
+## webdriver
+lnk <- 'https://tradingstation.fxcm.com/'
+user <- 'D173140088'
+pwd <- '8876'
+token <- 'a9c1d19d1dbce3e5a3bd94ed21cb6c79eaf47978'
+
