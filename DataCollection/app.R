@@ -78,9 +78,12 @@ ui <- shinyUI(fluidPage(
                             p(strong(paste0('Current time (', zone, '):')),
                               textOutput('currentTime3')),
                             p('The time zone of data in GMT.'), 
-                            dataTableOutput('fxDataTable'),
-                            actionButton('refresh', 'Refresh'), 
-                            actionButton('reset', 'Reset')))), 
+                            dataTableOutput('fxDataTable'), 
+                            p('Please becareful, once you click on "Reset" button, ', 
+                              'all data will be lost. Kindly download the dataset ', 
+                              'as csv format prior to reset it.'), 
+                            actionButton('refresh', 'Refresh', class = 'btn-primary'), 
+                            actionButton('reset', 'Reset', class = 'btn-danger')))), 
         
         tabPanel('Appendix', 
                  tabsetPanel(
@@ -132,42 +135,47 @@ server <- shinyServer(function(input, output, session){
     invalidateLater(1000, session)
     
     if(exists('realData')) {
-      tail(realData, 1) %>% tbl_df %>% mutate(
-        `TimeStamp (GMT)` = format(`TimeStamp (GMT)`,'%Y-%m-%d %H:%M:%OS'))
+      if(is.data.frame(realData) & (nrow(realData) > 0)) {
+        tail(realData, 1) %>% tbl_df %>% mutate(
+          `TimeStamp (GMT)` = format(`TimeStamp (GMT)`,'%Y-%m-%d %H:%M:%OS'))
+      }
     }
   })
   
   # Function to get new observations
   get_new_data <- function(curr){
-    data <- getSymbols(curr, from = today('GMT'), 
-                       auto.assign = FALSE) %>% Cl
-    
-    if(curr == 'EURUSD=X') {
-      names(data) <- 'EURUSD'
-      #'@ lnk <- 'https://finance.yahoo.com/quote/EURUSD=X?p=EURUSD=X'
-    } else if(curr == 'JPY=X') {
-      names(data) <- 'USDJPY'
-      #'@ lnk <- 'https://finance.yahoo.com/quote/JPY=X?p=JPY=X'
-    } else if(curr == 'GBPUSD=X') {
-      names(data) <- 'GBPUSD'
-      #'@ lnk <- 'https://finance.yahoo.com/quote/GBPUSD=X?p=GBPUSD=X'
-    } else if(curr == 'CHF=X') {
-      names(data) <- 'USDCHF'
-      #'@ lnk <- 'https://finance.yahoo.com/quote/CHF=X?p=CHF=X'
-    } else if(curr == 'CAD=X') {
-      names(data) <- 'USDCAD'
-      #'@ lnk <- 'https://finance.yahoo.com/quote/CAD=X?p=CAD=X'
-    } else if(curr == 'AUDUSD=X') {
-      names(data) <- 'AUDUSD'
-      #'@ lnk <- 'https://finance.yahoo.com/quote/AUDUSD=X?p=AUDUSD=X'
-    } else {
-      stop('The selected currency is not in the range.')
+    data <- tryCatch(getSymbols('EURUSD=X', from = today('GMT'), 
+                                auto.assign = FALSE), error=function(e){})
+    if(!is.null(data)) {
+      data %<>% Cl
+      
+      if(curr == 'EURUSD=X') {
+        names(data) <- 'EURUSD'
+        #'@ lnk <- 'https://finance.yahoo.com/quote/EURUSD=X?p=EURUSD=X'
+      } else if(curr == 'JPY=X') {
+        names(data) <- 'USDJPY'
+        #'@ lnk <- 'https://finance.yahoo.com/quote/JPY=X?p=JPY=X'
+      } else if(curr == 'GBPUSD=X') {
+        names(data) <- 'GBPUSD'
+        #'@ lnk <- 'https://finance.yahoo.com/quote/GBPUSD=X?p=GBPUSD=X'
+      } else if(curr == 'CHF=X') {
+        names(data) <- 'USDCHF'
+        #'@ lnk <- 'https://finance.yahoo.com/quote/CHF=X?p=CHF=X'
+      } else if(curr == 'CAD=X') {
+        names(data) <- 'USDCAD'
+        #'@ lnk <- 'https://finance.yahoo.com/quote/CAD=X?p=CAD=X'
+      } else if(curr == 'AUDUSD=X') {
+        names(data) <- 'AUDUSD'
+        #'@ lnk <- 'https://finance.yahoo.com/quote/AUDUSD=X?p=AUDUSD=X'
+      } else {
+        stop('The selected currency is not in the range.')
+      }
+      
+      #'@ msg <- lnk %>% read_html %>% html_nodes(xpath = '//*[@id="quote-market-notice"]/span') %>% html_text
+      
+      index(data) <- now('GMT')
+      return(data)
     }
-    
-    #'@ msg <- lnk %>% read_html %>% html_nodes(xpath = '//*[@id="quote-market-notice"]/span') %>% html_text
-    
-    index(data) <- now('GMT')
-    return(data)
   }
   
   ## ----------------- Start EURUSD ---------------------------
@@ -330,7 +338,8 @@ server <- shinyServer(function(input, output, session){
            file.exists('USDCAD.rds'), 
            file.exists('AUDUSD.rds'))) {
       realData <<- llply(dir(pattern = '.rds'), readRDS)
-      realData <<- do.call(cbind, realData) %>% na.locf #%>% na.omit
+      realData <<- do.call(cbind, realData)
+      if(!is.null(realData)) realData %<>% na.locf #%>% na.omit
       realData <<- realData %>% tbl_df %>% mutate(`TimeStamp (GMT)` = index(realData))
       realData <<- cbind(realData[ncol(realData)], realData[-ncol(realData)])
     } else {
@@ -338,10 +347,12 @@ server <- shinyServer(function(input, output, session){
     }
   })
   
-  reset <- reactive({
-    input$reset
-    do.call(file.remove, list(dir(pattern = '.rds')))
-    rm(list = ls(all = TRUE))
+  observe({
+    if(input$reset){
+      do.call(file.remove, list(dir(pattern = '.rds')))
+      rm(list = ls())
+      stopApp('Delete all downloaded dataset!')
+    }
   })
   
   output$fxDataTable <- renderDataTable({
@@ -358,7 +369,6 @@ server <- shinyServer(function(input, output, session){
                                          buttons = c('csv', 'excel', 'pdf'), 
                                          text = 'Download'), I('colvis'))))
   })
-  
 })
 
 shinyApp(ui, server)
