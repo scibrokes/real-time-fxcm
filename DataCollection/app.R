@@ -66,14 +66,16 @@ ui <- shinyUI(fluidPage(
                             p(strong(paste0('Current time (', zone, '):')),
                               textOutput('currentTime2')),
                             br(), 
-                            plotOutput("plotBidPrice"), 
-                            tags$hr(),
-                            plotOutput("plotAskPrice")), 
+                            plotOutput("plotPrice")#, 
+                            #'@ tags$hr(),
+                            #'@ plotOutput("plotAskPrice")
+                            ), 
                    tabPanel('Data', 
                             h3('Data Download'), 
                             p(strong(paste0('Current time (', zone, '):')),
-                              textOutput('currentTime3')),
-                            p('The time zone of data in GMT.'), 
+                              textOutput('currentTime3')), 
+                            p('The time zone of data in GMT, Current time (GMT) :', 
+                              textOutput('currentTime4')), 
                             dataTableOutput('fxDataTable'), 
                             p(strong('Refresh'), 'button will collect the latest dataset ', 
                               '(time unit in seconds).'), 
@@ -134,6 +136,12 @@ server <- shinyServer(function(input, output, session){
     as.character(now('Asia/Tokyo'))
   })
   
+  output$currentTime4 <- renderText({
+    # Forces invalidation in 1000 milliseconds
+    invalidateLater(1000, session)
+    as.character(now('GMT'))
+  })
+  
   fetchData <- reactive({
     if (!input$pause)
       invalidateLater(750)
@@ -158,40 +166,60 @@ server <- shinyServer(function(input, output, session){
   
   # Function to update fxData, latest data will be showing upside.
   update_data <- function(){
-    fxData <<- rbind(get_new_data(), fxData)#  %>% unique
+    fxData <<- rbind(fxData, get_new_data())#  %>% unique
     saveRDS(fxData, paste0(str_replace_all(now('GMT'), ':', 'T'), 'GMT.rds'))
     }
   
-  output$plotBidPrice <- renderPlot({
+  output$plotPrice <- renderPlot({
     invalidateLater(1000, session)
     update_data()
     
-    dt <- terms()
-    if(nrow(dt) > 40) dt <- tail(dt, 40)
+    if(any(file.exists(paste0(dir(pattern = '.rds'))))) {
+      realPlot <<- llply(dir(pattern = '.rds'), readRDS)
+      realPlot <<- do.call(rbind, realPlot) %>% unique
+      realPlot <<- ldply(realPlot, ParseTrueFX) %>% unique %>% 
+        filter(Symbol == 'USD/JPY')
+    }
     
-    ggplot(data = dt, aes(x = TimeStamp, y = Bid.Price, 
-                               group = Symbol, colour = Symbol)) +
-      geom_line() + geom_point( size = 4, shape = 21, fill = 'white') + 
-      ggtitle('Real Time Graph 1 : Forex Bid Price')
+    if(nrow(realPlot) > 10) {
+      
+      ggplot(tail(realPlot, 10), aes(TimeStamp)) + 
+        geom_line(aes(y = Bid.Price, colour = 'Bid.Price')) + 
+        geom_line(aes(y = Ask.Price, colour = 'Ask.Price')) + 
+        ggtitle('Real Time USD/JPY')
+      
+    } else {
+      
+      ggplot(realPlot, aes(TimeStamp)) + 
+        geom_line(aes(y = Bid.Price, colour = 'Bid.Price')) + 
+        geom_line(aes(y = Ask.Price, colour = 'Ask.Price')) + 
+        ggtitle('Real Time USD/JPY')
+    }
     })
   
-  output$plotAskPrice <- renderPlot({
-    invalidateLater(1000, session)
-    update_data()
-    
-    dt <- terms()
-    if(nrow(dt) > 40) dt <- tail(dt, 40)
-    
-    ggplot(data = dt, aes(x = TimeStamp, y = Ask.Price, 
-                               group = Symbol, colour = Symbol)) +
-      geom_line() + geom_point( size = 4, shape = 21, fill = 'white') + 
-      ggtitle('Real Time Graph 2 : Forex Ask Price')
-  })
+  #'@ output$plotAskPrice <- renderPlot({
+  #'@   invalidateLater(1000, session)
+    #'@ update_data()
+  #'@   
+  #'@   dt <- terms()
+  #'@   if(nrow(dt) > 40) {
+  #'@     ggplot(data = tail(dt, 40), aes(x = TimeStamp, y = Ask.Price, 
+  #'@                           group = Symbol, colour = Symbol)) +
+  #'@       geom_line() + geom_point( size = 4, shape = 21, fill = 'white') + 
+  #'@       ggtitle('Real Time Graph 2 : Forex Ask Price')
+  #'@     
+  #'@   } else {
+  #'@     ggplot(data = dt, aes(x = TimeStamp, y = Ask.Price, 
+  #'@                           group = Symbol, colour = Symbol)) +
+  #'@       geom_line() + geom_point( size = 4, shape = 21, fill = 'white') + 
+  #'@       ggtitle('Real Time Graph 2 : Forex Ask Price')
+  #'@   }
+  #'@ })
   ## ------------------ End fxData ----------------------------
   
   terms <- reactive({
     input$refresh
-    
+
     if(any(file.exists(paste0(dir(pattern = '.rds'))))) {
       realData <<- llply(dir(pattern = '.rds'), readRDS)
       realData <<- do.call(rbind, realData) %>% unique
@@ -218,12 +246,13 @@ server <- shinyServer(function(input, output, session){
   })
   
   output$fxDataTable <- renderDataTable({
+    
     terms() %>% datatable(
       caption = "Table : Forex", 
       escape = FALSE, filter = "top", rownames = FALSE, 
       extensions = list("ColReorder" = NULL, "RowReorder" = NULL, 
                         "Buttons" = NULL, "Responsive" = NULL), 
-      options = list(dom = 'BRrltpi', autoWidth = TRUE, scrollX = TRUE, 
+      options = list(dom = 'BRrltpi', scrollX = TRUE, #autoWidth = TRUE, 
                      lengthMenu = list(c(10, 50, 100, -1), c('10', '50', '100', 'All')), 
                      ColReorder = TRUE, rowReorder = TRUE, 
                      buttons = list('copy', 'print', 
@@ -231,6 +260,13 @@ server <- shinyServer(function(input, output, session){
                                          buttons = c('csv', 'excel', 'pdf'), 
                                          text = 'Download'), I('colvis'))))
   })
+  
+  #'@ outputOptions(output, 'currentTime', suspendWhenHidden = FALSE)
+  #'@ outputOptions(output, 'currentTime2', suspendWhenHidden = FALSE)
+  #'@ outputOptions(output, 'currentTime3', suspendWhenHidden = FALSE)
+  outputOptions(output, 'plotPrice', suspendWhenHidden = FALSE)
+  outputOptions(output, 'fxdata', suspendWhenHidden = FALSE)
+  outputOptions(output, 'fxDataTable', suspendWhenHidden = FALSE)
 })
 
 shinyApp(ui, server)
