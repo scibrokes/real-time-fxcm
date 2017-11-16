@@ -152,6 +152,8 @@ server <- shinyServer(function(input, output, session){
   })
   
   output$fxdata <- renderTable({
+    update_data()
+    
     fetchData()
   }, digits = 5, row.names = FALSE)
   
@@ -172,7 +174,7 @@ server <- shinyServer(function(input, output, session){
   
   output$plotPrice <- renderPlot({
     invalidateLater(1000, session)
-    update_data()
+    #update_data()
     
     if(any(file.exists(paste0(dir(pattern = '.rds'))))) {
       realPlot <<- llply(dir(pattern = '.rds'), readRDS)
@@ -261,12 +263,11 @@ server <- shinyServer(function(input, output, session){
                                          text = 'Download'), I('colvis'))))
   })
   
-  #'@ outputOptions(output, 'currentTime', suspendWhenHidden = FALSE)
-  #'@ outputOptions(output, 'currentTime2', suspendWhenHidden = FALSE)
-  #'@ outputOptions(output, 'currentTime3', suspendWhenHidden = FALSE)
-  outputOptions(output, 'plotPrice', suspendWhenHidden = FALSE)
-  outputOptions(output, 'fxdata', suspendWhenHidden = FALSE)
-  outputOptions(output, 'fxDataTable', suspendWhenHidden = FALSE)
+  # Set this to "force" instead of TRUE for testing locally (without Shiny Server)
+  session$allowReconnect(TRUE)
+  llply(c('plotPrice', 'fxdata', 'fxDataTable'), function(x) {
+    outputOptions(output, x, suspendWhenHidden = FALSE)
+  })
 })
 
 shinyApp(ui, server)
