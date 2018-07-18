@@ -1,11 +1,10 @@
-require(data.table)
-require(plyr)
-require(dplyr)
-require(magrittr)
-require(purrr)
-require(tidyr)
-require(stringr)
-require(lubridate)
+if(!require('BBmisc')) install.packages('BBmisc')
+suppressPackageStartupMessages(require(BBmisc))
+pkgs <- c('data.table', 'plyr', 'dplyr', 'magrittr', 'purrr', 
+          'tidyr', 'stringr', 'lubridate')
+
+lib(pkgs)
+rm(pkgs)
 
 ## --------------------- Read Data -------------------------------
 dr <- 'data/USDJPY/'
@@ -146,7 +145,7 @@ filter_HL <- function(mbase) {
   rm(B.Min, B.Max, A.Min, A.Max)
   
   return(res)
-}
+  }
 
 ## simulate secondary filter daily high-low price.
 for(i in seq(length(drt))) {
@@ -159,5 +158,41 @@ for(i in seq(length(drt))) {
   eval(parse(text = paste0("rm(", nm[i], ")")))
   cat(paste0(dr, nm[i], '.rds saved!\n'))  
   }
+
+read_HL_tick_data <- function(dr = 'data/USDJPY/', df.type = 'data.table') {
+  
+  if(!require('BBmisc')) install.packages('BBmisc')
+  suppressPackageStartupMessages(require(BBmisc))
+  pkgs <- c('data.table', 'plyr', 'dplyr', 'magrittr', 'purrr', 
+            'tidyr', 'stringr', 'lubridate')
+  
+  lib(pkgs)
+  rm(pkgs)
+  
+  #'@ dr <- 'data/USDJPY/'
+  
+  ## unzip dataset.
+  if(file.exists(paste0(dr, 'USDJPY.zip')) & 
+     all(file.exists(paste0(dr, dir(dr, pattern = '_HL.rds'))))) {
+    unzip(paste0(dr, 'USDJPY.zip'), exdir = dr)
+  }
+  
+  res <- ldply(paste0(dr, dir(dr, pattern = '_HL.rds')), readRDS)
+  
+  if(df.type == 'data.table') {
+    res %<>% data.table
+  } else if(df.type == 'tbl_df') {
+    res %<>% tbl_df
+  } else {
+    stop("Kindly choose df.type = 'data.table' or df.type = 'tbl_df'.")
+  }
+  
+  file.remove(paste0(dr, dir(dr, pattern = '_HL.rds')))
+  
+  return(res)
+  }
+
+
+
 
 
