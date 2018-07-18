@@ -172,8 +172,7 @@ read_HL_tick_data <- function(dr = 'data/USDJPY/', df.type = 'data.table') {
   #'@ dr <- 'data/USDJPY/'
   
   ## unzip dataset.
-  if(file.exists(paste0(dr, 'USDJPY.zip')) & 
-     all(file.exists(paste0(dr, dir(dr, pattern = '_HL.rds'))))) {
+  if(file.exists(paste0(dr, 'USDJPY.zip'))) {
     unzip(paste0(dr, 'USDJPY.zip'), exdir = dr)
   }
   
