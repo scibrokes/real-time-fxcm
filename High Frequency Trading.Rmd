@@ -1,20 +1,29 @@
 ---
-title: "<img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/HFT.jpg' width='840'>"
+title: "<img src='www/HFT.jpg' width='840'>"
 subtitle: "[High Frequency Trading](https://github.com/scibrokes/real-time-fxcm)"
-author: "[®γσ, Lian Hu](https://englianhu.github.io/) <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/ENG.jpg' width='24'> <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/RYO.jpg?raw=true' width='24'>白戸則道®"
-date: "`r Sys.Date()`"
+author: "[®γσ, Lian Hu](https://englianhu.github.io/) <img src='www/ENG.jpg' width='24'> <img src='www/RYO.jpg' width='24'>®"
+date: "`r lubridate::today('Asia/Tokyo')`"
 output:
-  html_notebook:
+  html_document: 
+    number_sections: yes
     toc: yes
     toc_depth: 4
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
 ---
 
 ```{r setup}
 #'@ rm(list = ls(all = TRUE))
 
 suppressPackageStartupMessages(library('BBmisc'))
-pkgs <- c('knitr', 'kableExtra', 'tint', 'devtools', 'lubridate', 'data.table', 'quantmod', 'shiny', 'R.utils', 'memoise', 'magrittr', 'plyr', 'dplyr', 'stringr', 'TFX', 'quantmod', 
-'QuantTools', 'rugarch', 'tidyverse', 'htmltools', 'highcharter', 'googleVis', 'formattable', 'DT', 'reticulate')
+pkgs <- c('knitr', 'kableExtra', 'tint', 'devtools', 'lubridate', 'data.table', 'quantmod', 'shiny', 'R.utils', 'memoise', 'magrittr', 'plyr', 'dplyr', 'stringr', 'TFX', 'quantmod',  'QuantTools', 'FinancialInstrument', 'foreach', 'RTAQ', 'rugarch', 'tidyverse', 'htmltools', 'highcharter', 'googleVis', 'formattable', 'DT', 'reticulate')
+
+devtools::install_bitbucket( 'quanttools/QuantTools' )
+devtools::install_github("braverock/blotter") # dependency
+devtools::install_github("braverock/quantstrat")
+# https://stackoverflow.com/questions/44891437/install-quantstrat-for-r-latest-r-version
+# https://r-forge.r-project.org/R/?group_id=316
 
 #'@ funs <- c('plotChart2.R')
 #'@ 
@@ -31,15 +40,19 @@ rm(pkgs)
 
 # 1. Introduction
 
-  High frequency trading is an automated trading platform used by large investment banks, hedge funds and institutional investors which utilizes powerful computers to transact a large number of orders at extremely high speeds. These high frequency trading platforms allow traders to execute millions of orders and scan multiple markets and exchanges in a matter of seconds, thus giving the institutions that use the platforms a huge advantage in the open market.
+High frequency trading is an automated trading platform used by large investment banks, hedge funds and institutional investors which utilizes powerful computers to transact a large number of orders at extremely high speeds. These high frequency trading platforms allow traders to execute millions of orders and scan multiple markets and exchanges in a matter of seconds, thus giving the institutions that use the platforms a huge advantage in the open market.
 
-  Read more: [What is high-frequency trading?](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp#ixzz4wVO6j7e4)
+Read more: [What is high-frequency trading?](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp#ixzz4wVO6j7e4)
 
-  By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to model few Kelly funds for financial trading. Today I am zooming on the Kellys fund.
+By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to model few Kelly funds for financial trading. Today I am zooming on the Kellys fund.
+
+**Understanding the Kelly Capital Growth Investment Strategy** describe that the suggestion fractional Kelly for high frequency trading is low due to nowadays all quantitative are programmed trading.
+
+![](www/Kelly-HFT.jpg)
 
 # 2. Data
 
-```{python read-data}
+```{python read-data, eval=FALSE}
 import_from_path('selenium')
 ```
 
@@ -110,8 +123,13 @@ rm(sys1)
 
 ## 5.2 Reference
 
-  01. [**Betting Strategy and Model Validation - Part II** *by ®γσ, Lian Hu (2017)*](https://englianhu.github.io/2017/10/Betting_Strategy_and_Model_Validation_-_Part_02/)
-  02. [**binary.com : Job Application - Quantitative Analyst** *by ®γσ, Lian Hu (2017)*](https://github.com/englianhu/binary.com-interview-question)
-  03. [**What is high-frequency trading?** *by Investopedia Staff*](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp)
+01. [**Betting Strategy and Model Validation - Part II** *by ®γσ, Lian Hu (2017)*](https://englianhu.github.io/2017/10/Betting_Strategy_and_Model_Validation_-_Part_02/)
+02. [**binary.com : Job Application - Quantitative Analyst** *by ®γσ, Lian Hu (2017)*](https://github.com/englianhu/binary.com-interview-question)
+03. [**What is high-frequency trading?** *by Investopedia Staff*](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp)
+04. [Understanding the Kelly Capital Growth Investment Strategy](https://github.com/scibrokes/kelly-criterion/blob/master/references/Understanding%20the%20Kelly%20Capital%20Growth%20Investment%20Strategy.pdf)
+05. [如何用R语言开始量化投资]()
+06. [解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法]()
 
-**Powered by - Copyright® Intellectual Property Rights of <img src='https://raw.githubusercontent.com/scibrokes/real-time-fxcm/master/www/oda-army2.jpg?raw=true' width='24'> [Scibrokes®](http://www.scibrokes.com)個人の経営企業**
+---
+
+**Powered by - Copyright® Intellectual Property Rights of <img src='www/oda-army2.jpg' width='24'> [Scibrokes®](http://www.scibrokes.com)個人の経営企業**
