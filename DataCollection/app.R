@@ -263,8 +263,11 @@ server <- shinyServer(function(input, output, session){
                                          text = 'Download'), I('colvis'))))
   })
   
-  # Set this to "force" instead of TRUE for testing locally (without Shiny Server)
-  session$allowReconnect(TRUE)
+  ## Set this to "force" instead of TRUE for testing locally (without Shiny Server)
+  ## If session$allowReconnect(TRUE), stopApp() will auto reconnect and  there will be endless 
+  ##   reconnect and disconnect step only and not able to reset the app.
+  #'@ session$allowReconnect(TRUE) 
+  
   llply(c('plotPrice', 'fxdata', 'fxDataTable'), function(x) {
     outputOptions(output, x, suspendWhenHidden = FALSE)
   })

@@ -100,7 +100,6 @@ eval(parse(text = paste0(
 
 
 
-
 ## check the number of *.rds files in directory.
 dr <- 'data/USDJPY/'
 drt <- dir(dr, pattern = '_HL.rds')
@@ -190,8 +189,5 @@ read_HL_tick_data <- function(dr = 'data/USDJPY/', df.type = 'data.table') {
   
   return(res)
   }
-
-
-
 
 
