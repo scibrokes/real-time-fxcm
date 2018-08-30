@@ -25,38 +25,130 @@ devtools::install_github("braverock/quantstrat")
 # https://stackoverflow.com/questions/44891437/install-quantstrat-for-r-latest-r-version
 # https://r-forge.r-project.org/R/?group_id=316
 
-#'@ funs <- c('plotChart2.R')
-#'@ 
 suppressAll(lib(pkgs))
-#'@ l_ply(paste0('./function/', funs), source)
+funs <- c('plotChart2.R', 'read_tick.data.R')
 
-## Set option to below if you want to plot an independent webpage with graph 
-#'@ op <- options(gvis.plot.tag=NULL)
-op <- options(gvis.plot.tag = 'chart')
+l_ply(paste0('./function/', funs), source)
+
+cr_code <- c('AUDUSD=X', 'EURUSD=X', 'GBPUSD=X', 'CHF=X', 'CAD=X', 
+             'CNY=X', 'JPY=X')
+
+names(cr_code) <- c('AUDUSD', 'EURUSD', 'GBPUSD', 'USDCHF', 'USDCAD', 
+                    'USDCNY', 'USDJPY')
+
 options(warn = -1)
-
 rm(pkgs)
 ```
 
-# 1. Introduction
+# Introduction
+
+## Introduce High Frequency Trading
 
 High frequency trading is an automated trading platform used by large investment banks, hedge funds and institutional investors which utilizes powerful computers to transact a large number of orders at extremely high speeds. These high frequency trading platforms allow traders to execute millions of orders and scan multiple markets and exchanges in a matter of seconds, thus giving the institutions that use the platforms a huge advantage in the open market.
 
 Read more: [What is high-frequency trading?](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp#ixzz4wVO6j7e4)
 
-By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to model few Kelly funds for financial trading. Today I am zooming on the Kellys fund.
+## Introduce Relevant Papers
 
-**Understanding the Kelly Capital Growth Investment Strategy** describe that the suggestion fractional Kelly for high frequency trading is low due to nowadays all quantitative are programmed trading.
+By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to compare few Kelly funds for financial trading.
+
+**Understanding the Kelly Capital Growth Investment Strategy** describe that the suggestion fractional Kelly for high frequency trading is low due to nowadays all quantitative are programmed trading. Professor William Ziemba describe that the founder of PIMCO fund probably using Kelly model since he used to read the <<Beat the Dealers>> where introduce the Kelly criterion model. The **6.2 Correction in Next Paper** inside **binary.com Interview Question I - Tick-Data-HiLo For Daily Trading <span style='color:red'>(Blooper)</span>** propose a dynamic fractional Kelly model where $0.5 \lequal f \lequal 1$ and perhaps will in [Application of Kelly Criterion model in Sportsbook Investment](https://github.com/scibrokes/kelly-criterion).
 
 ![](www/Kelly-HFT.jpg)
 
+**如何用R语言开始量化投资** introduce some useful r packages for quantitative trading. **原则 - 雷·达里奥** is the autobiography of Ray Dalio, he describe how he use the quantitative modelling and $\alpha$ model to evaluate the risk and invest. Besides, he also introduce how to manage his \$160 billion world leading Bridgewater hedge fund .^[Refer to [Ray Dalio](https://www.forbes.com/profile/ray-dalio/#6c7b541a663a).] This paper is not talk about management while you can try to refer to [Analyse the Finance and Stocks Price of Bookmakers](https://github.com/scibrokes/analyse-the-finance-and-stocks-price-of-bookmakers) will touch about the financial statement and stock price.
+
+**解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法** decode the World number 1's profitable statistical model. The *Markov Hidden Model* and *Autoregressive Markov Switching Model* will be most interest and will start study in another paper. I was think of using HMM or bernoulli distribution to determine the value $f$ for dynamic fractional Kelly.
+
+**binary.com Interview Question I - Interday High Frequency Trading** suggest a better model for interday trading, **binary.com Interview Question I - Multivariate GARCH Models** compares the multivariate GARCH models. Now I try to fit the high-frequency univariate model into multivariate model for intraday trading.
+
 # 2. Data
 
-```{python read-data, eval=FALSE}
-import_from_path('selenium')
+I gather the tick-data via [FXCMTickData](https://github.com/fxcm/FXCMTickData) for high frequency trading.
+
+- AUDUSD
+- EURUSD
+- GBPUSD
+- USDCHF
+- USDCAD
+- <s>USDCNY</s>
+- USDJPY
+
+**binary.com Interview Question I - Tick-Data-HiLo For Daily Trading <span style='color:red'>(Blooper)</span>** try to use the intraday of USDJPY and filter to get only highest `bid` and lowest `ask` to determine if there is a buy or a sell transaction (or no transaction) within a day. The reason of the paper tag as <span style='color:red'>(Blooper)</span> had explained inside that paper.
+
+Below I gather and filter the dataset.
+
+```{r get-data, eval=FALSE}
+------------- eval=FALSE ---------------
+#'@ names(cr_code) <- c('USDAUD', 'USDEUR', 'USDGBP', 'USDCHF', 'USDCAD', 'USDCNY', 'USDJPY')
+yr <- c(2015, 2016, 2017, 2018)
+
+## get currency dataset online.
+while(TRUE) {
+  ## https://www.epochconverter.com/years
+  llply(names(cr_code), function(x) {
+    dr <- paste0('data/', x, '/')
+    llply(yr, function(i) {
+      if(i == 2015|i == 2017) wk <- 1:53 else wk <- 1:52
+      if(i == 2018) wk <- 1:27
+      llply(wk, function(j) {
+        lnk <- paste0(
+          'https://tickdata.fxcorporate.com/', x, '/', i, '/', j, '.csv.gz')
+        if(!dir.exists(dr)) dir.create(dr)
+        if(!file.exists(paste0(dr, 'Y', i, 'W', j, '.csv.gz'))) {
+          tryCatch(download.file(lnk, destfile = paste0(
+            dr, 'Y', i, 'W', j, '.csv.gz')), error = function(e) NULL)
+          Sys.sleep(3)
+        }
+      })
+    })
+  })
+}
+
+## extract data.
+while(TRUE) {
+  ## https://www.epochconverter.com/years
+  llply(names(cr_code), function(x) {
+    dr <- paste0('data/', x, '/')
+    llply(yr, function(i) {
+      if(i == 2015|i == 2017) wk <- 1:53 else wk <- 1:52
+      llply(wk, function(j) {
+        if (file.exists(paste0(dr, 'Y', i, 'W', j, '.csv.gz'))) {
+          if (!file.exists(paste0(dr, 'Y', i, 'W', j, '.csv'))) {
+            R.utils::gunzip(paste0(dr, 'Y', i, 'W', j, '.csv.gz'), 
+                            remove = FALSE)
+            cat(paste0(dr, 'Y', i, 'W', j, '.csv.gz extracted!\n'))
+            Sys.sleep(3)
+           }
+        }
+      })
+    })
+  })
+}
+
+## saved *.csv file as *.rds files after tidy the dataset to ease the time for reading.
+llply(names(cr_code), function(x) {
+  dr <- paste0('data/', x, '/')
+  fls <- dir(dr, pattern = '.csv$')
+  
+  for(i in seq(length(fls))) {
+    nm <- str_replace_all(fls, '.csv', '')
+    
+    if(!file.exists(paste0(dr, nm[i], '.rds'))) {
+      assign(nm[i], read.csv(paste0(dr, fls[i]), skipNul = TRUE) %>% tbl_df)
+      
+      ## save dataset.
+      eval(parse(text = paste0("saveRDS(", nm[i], ", '", dr, nm[i], ".rds')")))
+      eval(parse(text = paste0("rm(", nm[i], ")")))
+      cat(paste0(dr, nm[i], '.rds saved!\n'))
+    }
+  }; rm(i, fls, nm)
+})
 ```
 
-```{r arrange-data}
+Now I read the dataset.
+
+```{r read-data}
 
 ```
 
@@ -81,18 +173,25 @@ import_from_path('selenium')
 ```
 
 
-# 4. Conclusion
+# Conclusion
+
+## Speech
 
 
-```{r stopPar, echo = FALSE}
+## Future Works
+
+The *Markov Hidden Model* and *Autoregressive Markov Switching Model* in **解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法** will be in another study.
+
+API skill need to learn in order to write a real algothmic trading website.
+
+```{r options, echo = FALSE}
 ## Set options back to original options
-options(op)
 options(warn = 0)
 ```
 
-# 5. Appendix
+# Appendix
 
-## 5.1 Documenting File Creation 
+## Documenting File Creation 
 
   It's useful to record some information about how your file was created.
 
@@ -127,8 +226,10 @@ rm(sys1)
 02. [**binary.com : Job Application - Quantitative Analyst** *by ®γσ, Lian Hu (2017)*](https://github.com/englianhu/binary.com-interview-question)
 03. [**What is high-frequency trading?** *by Investopedia Staff*](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp)
 04. [Understanding the Kelly Capital Growth Investment Strategy](https://github.com/scibrokes/kelly-criterion/blob/master/references/Understanding%20the%20Kelly%20Capital%20Growth%20Investment%20Strategy.pdf)
-05. [如何用R语言开始量化投资]()
-06. [解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法]()
+05. [如何用R语言开始量化投资](https://github.com/scibrokes/real-time-fxcm/blob/master/reference/%E5%A6%82%E4%BD%95%E7%94%A8R%E8%AF%AD%E8%A8%80%E5%BC%80%E5%A7%8B%E9%87%8F%E5%8C%96%E6%8A%95%E8%B5%84.pdf)
+06. [解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法](https://github.com/scibrokes/real-time-fxcm/blob/master/reference/%E8%A7%A3%E5%AF%86%E5%A4%8D%E5%85%B4%E7%A7%91%E6%8A%80%20-%20%E5%9F%BA%E4%BA%8E%E9%9A%90%E8%94%BD%E9%A9%AC%E5%B0%94%E7%A7%91%E5%A4%AB%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%97%B6%E5%BA%8F%E5%88%86%E6%9E%90%E6%96%B9%E6%B3%95.pdf)
+07. [原则 - 雷·达里奥](https://github.com/scibrokes/analyse-the-finance-and-stocks-price-of-bookmakers/blob/master/reference/%E5%8E%9F%E5%88%99%20-%20%E9%9B%B7%C2%B7%E8%BE%BE%E9%87%8C%E5%A5%A5.pdf)
+08. [binary.com Interview Question I - Tick-Data-HiLo For Daily Trading <span style='color:red'>(Blooper)</span>](http://rpubs.com/englianhu/binary-Q1TD)
 
 ---
 

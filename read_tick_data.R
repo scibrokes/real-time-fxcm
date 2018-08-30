@@ -7,8 +7,7 @@ lib(pkgs)
 rm(pkgs)
 
 ## --------------------- Read Data -------------------------------
-dr <- 'data/USDJPY/'
-fls <- dir(dr, pattern = '.csv$')
+
 #dfm <- read.csv(paste0(dr, fls), skipNul = TRUE)
 
 # start <- seq(1, 186, 31)
@@ -16,21 +15,25 @@ fls <- dir(dr, pattern = '.csv$')
 # stop <- c(stop[-1], length(fls))
 # paste0('fls = fls[', start, ':', stop, ']')
 
-nm <- str_replace_all(fls, '.csv', '')
 
-##
-for(i in seq(length(fls))) {
-  #if(!file.exists(paste0(dr, nm[i], '.rds'))) {
-  assign(nm[i], read.csv(
-    paste0(dr, fls[i]), skipNul = TRUE) %>% tbl_df)
+
+llply(names(cr_code), function(x) {
+  dr <- paste0('data/', x, '/')
+  fls <- dir(dr, pattern = '.csv$')
   
-  ## save dataset.
-  eval(parse(text = paste0(
-    "saveRDS(", nm[i], ", '", dr, nm[i], ".rds')")))
-  eval(parse(text = paste0("rm(", nm[i], ")")))
-  cat(paste0(dr, nm[i], '.rds saved!\n'))
-  #}
-}; rm(i, fls, nm)
+  for(i in seq(length(fls))) {
+    nm <- str_replace_all(fls, '.csv', '')
+    
+    if(!file.exists(paste0(dr, nm[i], '.rds'))) {
+      assign(nm[i], read.csv(paste0(dr, fls[i]), skipNul = TRUE) %>% tbl_df)
+      
+      ## save dataset.
+      eval(parse(text = paste0("saveRDS(", nm[i], ", '", dr, nm[i], ".rds')")))
+      eval(parse(text = paste0("rm(", nm[i], ")")))
+      cat(paste0(dr, nm[i], '.rds saved!\n'))
+    }
+  }; rm(i, fls, nm)
+})
 
 ## --------------------- Check Files -------------------------------
 ## check the number of *.rds files in directory.
