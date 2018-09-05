@@ -62,15 +62,15 @@ Read more: [What is high-frequency trading?](http://www.investopedia.com/ask/ans
 
 By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to compare few Kelly funds for financial trading.
 
-**Understanding the Kelly Capital Growth Investment Strategy** describe that the suggestion fractional Kelly for high frequency trading is low due to nowadays all quantitative are programmed trading. Professor William Ziemba describe that the founder of PIMCO fund probably using Kelly model since he used to read the <<Beat the Dealers>> where introduce the Kelly criterion model. The **6.2 Correction in Next Paper** inside **binary.com Interview Question I - Tick-Data-HiLo For Daily Trading <span style='color:red'>(Blooper)</span>** propose a dynamic fractional Kelly model where $0.5 \lequal f \lequal 1$ and perhaps will in [Application of Kelly Criterion model in Sportsbook Investment](https://github.com/scibrokes/kelly-criterion).
+*Understanding the Kelly Capital Growth Investment Strategy* describe that the suggestion fractional Kelly for high frequency trading is low due to nowadays all quantitative are programmed trading. Professor William Ziemba describe that the founder of PIMCO fund probably using Kelly model since he used to read the <<Beat the Dealers>> where introduce the Kelly criterion model. The *6.2 Correction in Next Paper* inside *binary.com Interview Question I - Tick-Data-HiLo For Daily Trading <span style='color:red'>(Blooper)</span>* propose a dynamic fractional Kelly model where $0.5 \lequal f \lequal 1$ and perhaps will in [Application of Kelly Criterion model in Sportsbook Investment](https://github.com/scibrokes/kelly-criterion).
 
 ![](www/Kelly-HFT.jpg)
 
-**如何用R语言开始量化投资** introduce some useful r packages for quantitative trading. **原则 - 雷·达里奥** is the autobiography of Ray Dalio, he describe how he use the quantitative modelling and $\alpha$ model to evaluate the risk and invest. Besides, he also introduce how to manage his \$160 billion world leading Bridgewater hedge fund .^[Refer to [Ray Dalio](https://www.forbes.com/profile/ray-dalio/#6c7b541a663a).] This paper is not talk about management while you can try to refer to [Analyse the Finance and Stocks Price of Bookmakers](https://github.com/scibrokes/analyse-the-finance-and-stocks-price-of-bookmakers) will touch about the financial statement and stock price.
+*Financial Risk Modelling and Portfolio Optimization with R (2nd Edt)* and *如何用R语言开始量化投资* introduce some useful r packages for quantitative trading. *原则 - 雷·达里奥* is the autobiography of Ray Dalio, he describe how he use the quantitative modelling and $\alpha$ model to evaluate the risk and invest. Besides, he also introduce how to manage his \$160 billion world leading Bridgewater hedge fund .^[Refer to [Ray Dalio](https://www.forbes.com/profile/ray-dalio/#6c7b541a663a).] This paper is not talk about management while you can try to refer to [Analyse the Finance and Stocks Price of Bookmakers](https://github.com/scibrokes/analyse-the-finance-and-stocks-price-of-bookmakers) will touch about the financial statement and stock price.
 
-**解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法** decode the World number 1's profitable statistical model. The *Markov Hidden Model* and *Autoregressive Markov Switching Model* will be most interest and will start study in another paper. I was think of using HMM or bernoulli distribution to determine the value $f$ for dynamic fractional Kelly.
+*解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法* decode the World number 1's profitable statistical model. The *Markov Hidden Model* and *Autoregressive Markov Switching Model* will be most interest and will start study in another paper. I was think of using HMM or bernoulli distribution to determine the value $f$ for dynamic fractional Kelly.
 
-**binary.com Interview Question I - Interday High Frequency Trading** suggest a better model for interday trading, **binary.com Interview Question I - Multivariate GARCH Models** compares the multivariate GARCH models. Now I try to fit the high-frequency univariate model into multivariate model for intraday trading.
+*binary.com Interview Question I - Interday High Frequency Trading* suggest a better model for interday trading, *binary.com Interview Question I - Multivariate GARCH Models* compares the multivariate GARCH models. Now I try to fit the high-frequency univariate model into multivariate model for intraday trading.
 
 # Data
 
@@ -84,7 +84,7 @@ I gather the tick-data via [FXCMTickData](https://github.com/fxcm/FXCMTickData) 
 - <s>USDCNY</s>
 - USDJPY
 
-**binary.com Interview Question I - Tick-Data-HiLo For Daily Trading <span style='color:red'>(Blooper)</span>** try to use the intraday of USDJPY and filter to get only highest `bid` and lowest `ask` to determine if there is a buy or a sell transaction (or no transaction) within a day. The reason of the paper tag as <span style='color:red'>(Blooper)</span> had explained inside that paper.
+*binary.com Interview Question I - Tick-Data-HiLo For Daily Trading <span style='color:red'>(Blooper)</span>* try to use the intraday of USDJPY and filter to get only highest `bid` and lowest `ask` to determine if there is a buy or a sell transaction (or no transaction) within a day. The reason of the paper tag as <span style='color:red'>(Blooper)</span> had explained inside that paper.
 
 Below I gather and filter the dataset.
 
@@ -190,7 +190,7 @@ Now I read the dataset.
 
 ## Future Works
 
-The *Markov Hidden Model* and *Autoregressive Markov Switching Model* in **解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法** will be in another study.
+The *Markov Hidden Model* and *Autoregressive Markov Switching Model* in *解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法* will be in another study.
 
 API skill need to learn in order to write a real algothmic trading website.
 
@@ -255,6 +255,7 @@ rm(sys1, sys2)
 09. [Markov-Switching Autoregressive Models for Wind Times Series (ppt)](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Markov-Switching%20Autoregressive%20Models%20for%20Wind%20Time%20Series%20(ppt).pdf)
 10. [Markov-Switching Autoregressive Models for Wind Times Series](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Markov-Switching%20Autoregressive%20Models%20for%20Wind%20Time%20Series.pdf)
 12. [Modelling Exchange Rates using Regime Switching Models](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Modelling%20Exchange%20Rates%20using%20Regime%20Switching%20Models.pdf)
+13. [Financial Risk Modelling and Portfolio Optimization with R (2nd Edt)](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Financial%20Risk%20Modelling%20and%20Portfolio%20Optimization%20with%20R%20(2nd%20Edt).pdf)
 
 ---
 
