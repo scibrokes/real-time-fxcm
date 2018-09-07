@@ -1,7 +1,7 @@
 ---
 title: "<img src='www/HFT.jpg' width='840'>"
 subtitle: "[High Frequency Trading](https://github.com/scibrokes/real-time-fxcm)"
-author: "[®γσ, Lian Hu](https://englianhu.github.io/) <img src='www/ENG.jpg' width='24'> <img src='www/RYO.jpg' width='24'>®"
+author: "[®γσ, Lian Hu](https://englianhu.github.io/)<img src='www/RYO.jpg' width='24'><img src='www/RYU.jpg' width='24'><img src='www/ENG.jpg' width='24'>®"
 date: "`r lubridate::today('Asia/Tokyo')`"
 output:
   html_document: 
