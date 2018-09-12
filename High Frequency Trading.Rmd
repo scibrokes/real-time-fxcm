@@ -70,6 +70,8 @@ By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to compare few
 
 *解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法* decode the World number 1's profitable statistical model. The *Markov Hidden Model* and *Autoregressive Markov Switching Model* will be most interest and will start study in another paper. I was think of using HMM or bernoulli distribution to determine the value $f$ for dynamic fractional Kelly.
 
+[Hidden Markov Mdel](https://community.rstudio.com/t/hidden-markov-mdel/13741) and [Getting Started with Hidden Markov Models in R](http://blog.revolutionanalytics.com/2014/03/r-and-hidden-markov-models.html) introduce HMM model.
+
 *binary.com Interview Question I - Interday High Frequency Trading* suggest a better model for interday trading, *binary.com Interview Question I - Multivariate GARCH Models* compares the multivariate GARCH models. Now I try to fit the high-frequency univariate model into multivariate model for intraday trading.
 
 # Data
