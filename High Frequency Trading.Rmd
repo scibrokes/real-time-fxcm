@@ -78,6 +78,8 @@ By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to compare few
 
 *binary.com Interview Question I - Interday High Frequency Trading* suggest a better model for interday trading, *binary.com Interview Question I - Multivariate GARCH Models* compares the multivariate GARCH models. Now I try to fit the high-frequency univariate model into multivariate model for intraday trading.
 
+[10.6 Regime Switching Models](https://msperlin.github.io/pafdR/models.html#regime-switching-models) introduce switching model.
+
 # Data
 
 I gather the tick-data via [FXCMTickData](https://github.com/fxcm/FXCMTickData) for high frequency trading.
