@@ -80,7 +80,7 @@ By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to compare few
 
 # Data
 
-I gather the tick-data via [FXCMTickData](https://github.com/fxcm/FXCMTickData) for high frequency trading.
+I gather the tick-data via [FXCMTickData](https://github.com/fxcm/MarketData) for high frequency trading.
 
 - AUDUSD
 - EURUSD
