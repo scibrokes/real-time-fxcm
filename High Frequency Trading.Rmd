@@ -17,7 +17,7 @@ output:
 #'@ rm(list = ls(all = TRUE))
 
 suppressPackageStartupMessages(library('BBmisc'))
-pkgs <- c('knitr', 'kableExtra', 'tint', 'devtools', 'lubridate', 'data.table', 'quantmod', 'shiny', 'R.utils', 'memoise', 'magrittr', 'plyr', 'dplyr', 'stringr', 'TFX', 'quantmod',  'QuantTools', 'FinancialInstrument', 'foreach', 'RTAQ', 'rugarch', 'tidyverse', 'htmltools', 'highcharter', 'googleVis', 'formattable', 'DT', 'reticulate')
+pkgs <- c('knitr', 'kableExtra', 'tint', 'devtools', 'lubridate', 'data.table', 'quantmod', 'shiny', 'R.utils', 'memoise', 'magrittr', 'plyr', 'dplyr', 'stringr', 'TFX', 'quantmod',  'QuantTools', 'FinancialInstrument', 'foreach', 'RTAQ', 'rugarch', 'tidyverse', 'htmltools', 'highcharter', 'googleVis', 'formattable', 'DT', 'reticulate', 'highfrequency', 'HighFreq', 'EventStudy')
 
 if(!require('QuantTools')){
   devtools::install_bitbucket('quanttools/QuantTools')
@@ -77,6 +77,8 @@ By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to compare few
 [Hidden Markov Mdel](https://community.rstudio.com/t/hidden-markov-mdel/13741) and [Getting Started with Hidden Markov Models in R](http://blog.revolutionanalytics.com/2014/03/r-and-hidden-markov-models.html) introduce HMM model.
 
 *binary.com Interview Question I - Interday High Frequency Trading* suggest a better model for interday trading, *binary.com Interview Question I - Multivariate GARCH Models* compares the multivariate GARCH models. Now I try to fit the high-frequency univariate model into multivariate model for intraday trading.
+
+[Convert multivariate XTS to TS in R](https://stackoverflow.com/questions/44250867/convert-multivariate-xts-to-ts-in-r) using `wavethresh` package.
 
 # Data
 
@@ -384,6 +386,11 @@ getSymbols('AAPL', src='av', api.key=api, periodicity='intraday')
 ```{r read-data}
 
 ```
+
+# Modelling
+
+- [Is there a random element in Markov Chain?](https://stackoverflow.com/questions/52867314/is-there-a-random-element-in-markov-chain) use `ChannelAttribution` package for Markov Chain modelling.
+- [如何用R软件求随机生成的一个100维0-1向量（即向量的元素由0和1组成），中1连续出现的最大次数](http://ask.pinggu.org/q-57886.html) introduced using `rle` to count the states.
 
 # Model Comparison
 
