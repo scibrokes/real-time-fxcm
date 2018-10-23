@@ -11,13 +11,14 @@ output:
     toc_float:
       collapsed: yes
       smooth_scroll: yes
+    code_folding: hide
 ---
 
 ```{r setup, message=FALSE}
 #'@ rm(list = ls(all = TRUE))
 
 suppressPackageStartupMessages(library('BBmisc'))
-pkgs <- c('knitr', 'kableExtra', 'tint', 'devtools', 'lubridate', 'data.table', 'quantmod', 'shiny', 'R.utils', 'memoise', 'magrittr', 'plyr', 'dplyr', 'stringr', 'TFX', 'quantmod',  'QuantTools', 'FinancialInstrument', 'foreach', 'RTAQ', 'rugarch', 'tidyverse', 'htmltools', 'highcharter', 'googleVis', 'formattable', 'DT', 'reticulate', 'highfrequency', 'HighFreq', 'EventStudy')
+pkgs <- c('devtools', 'knitr', 'kableExtra', 'tint', 'devtools', 'lubridate', 'data.table', 'quantmod', 'shiny', 'R.utils', 'memoise', 'magrittr', 'plyr', 'dplyr', 'stringr', 'purrr', 'TFX', 'TTR', 'quantmod', 'tidyquant', 'tibbletime', 'furrr', 'QuantTools', 'Quandl', 'FinancialInstrument', 'foreach', 'RTAQ', 'rugarch', 'tidyverse', 'htmltools', 'highcharter', 'googleVis', 'formattable', 'DT', 'reticulate', 'highfrequency', 'HighFreq', 'EventStudy')
 
 if(!require('QuantTools')){
   devtools::install_bitbucket('quanttools/QuantTools')
@@ -62,25 +63,29 @@ High frequency trading is an automated trading platform used by large investment
 
 Read more: [What is high-frequency trading?](http://www.investopedia.com/ask/answers/09/high-frequency-trading.asp#ixzz4wVO6j7e4)
 
+[QTS Capital Management, LLC.](http://www.qtscm.com/pool/) is a quantitative trading fund where mostly made profit monthly. The author of <span style='color:goldenrod'>*量化交易 - 如何建立自己的算法交易事业*</span>
+
 ## Introduce Relevant Papers
 
-By refer to *Ryo Eng Lian Hu (2017)*^[reference paper 1], I tried to compare few Kelly funds for financial trading.
+By refer to <span style='color:goldenrod'>*Ryo Eng Lian Hu (2017)*</span>^[reference paper 1], I tried to compare few Kelly funds for financial trading.
 
-*Understanding the Kelly Capital Growth Investment Strategy* describe that the suggestion fractional Kelly for high frequency trading is low due to nowadays all quantitative are programmed trading. Professor William Ziemba describe that the founder of PIMCO fund probably using Kelly model since he used to read the <<Beat the Dealers>> where introduce the Kelly criterion model. The *6.2 Correction in Next Paper* inside *binary.com Interview Question I - Tick-Data-HiLo For Daily Trading <span style='color:red'>(Blooper)</span>* propose a dynamic fractional Kelly model where $0.5 \lequal f \lequal 1$ and perhaps will in [Application of Kelly Criterion model in Sportsbook Investment](https://github.com/scibrokes/kelly-criterion).
+<span style='color:goldenrod'>*Understanding the Kelly Capital Growth Investment Strategy*</span> describe that the suggestion fractional Kelly for high frequency trading is low due to nowadays all quantitative are programmed trading. Professor William Ziemba describe that the founder of PIMCO fund probably using Kelly model since he used to read the \<\<<span style='color:goldenrod'>*Beat the Dealers*</span>\>\> where introduce the Kelly criterion model. The *6.2 Correction in Next Paper* inside <span style='color:goldenrod'>*binary.com Interview Question I - Tick-Data-HiLo For Daily Trading </span><span style='color:red'>(Blooper)</span>* propose a dynamic fractional Kelly model where $0.5 \leq f \leq 1$ and perhaps will in [Application of Kelly Criterion model in Sportsbook Investment](https://github.com/scibrokes/kelly-criterion).
 
 ![](www/Kelly-HFT.jpg)
 
-*Financial Risk Modelling and Portfolio Optimization with R (2nd Edt)* and *如何用R语言开始量化投资* introduce some useful r packages for quantitative trading. *原则 - 雷·达里奥* is the autobiography of Ray Dalio, he describe how he use the quantitative modelling and $\alpha$ model to evaluate the risk and invest. Besides, he also introduce how to manage his \$160 billion world leading Bridgewater hedge fund .^[Refer to [Ray Dalio](https://www.forbes.com/profile/ray-dalio/#6c7b541a663a).] This paper is not talk about management while you can try to refer to [Analyse the Finance and Stocks Price of Bookmakers](https://github.com/scibrokes/analyse-the-finance-and-stocks-price-of-bookmakers) will touch about the financial statement and stock price.
+<span style='color:goldenrod'>*Financial Risk Modelling and Portfolio Optimization with R (2nd Edt)*</span> and <span style='color:goldenrod'>*如何用R语言开始量化投资*</span> introduce some useful r packages for quantitative trading. <span style='color:goldenrod'>*原则 - 雷·达里奥*</span> is the autobiography of Ray Dalio, he describe how he use the quantitative modelling and $\alpha$ model to evaluate the risk and invest. Besides, he also introduce how to manage his \$160 billion world leading Bridgewater hedge fund .^[Refer to [Ray Dalio](https://www.forbes.com/profile/ray-dalio/#6c7b541a663a).] This paper is not talk about management while you can try to refer to [Analyse the Finance and Stocks Price of Bookmakers](https://github.com/scibrokes/analyse-the-finance-and-stocks-price-of-bookmakers) will touch about the financial statement and stock price.
 
-*解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法* decode the World number 1's profitable statistical model. The *Markov Hidden Model* and *Autoregressive Markov Switching Model* will be most interest and will start study in another paper. I was think of using HMM or bernoulli distribution to determine the value $f$ for dynamic fractional Kelly.
+<span style='color:goldenrod'>*解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法*</span> decode the World number 1's profitable statistical model. The *Markov Hidden Model* and *Autoregressive Markov Switching Model* will be most interest and will start study in another paper. I was think of using HMM or bernoulli distribution to determine the value $f$ for dynamic fractional Kelly.
 
 [Hidden Markov Mdel](https://community.rstudio.com/t/hidden-markov-mdel/13741) and [Getting Started with Hidden Markov Models in R](http://blog.revolutionanalytics.com/2014/03/r-and-hidden-markov-models.html) introduce HMM model.
 
-*binary.com Interview Question I - Interday High Frequency Trading* suggest a better model for interday trading, *binary.com Interview Question I - Multivariate GARCH Models* compares the multivariate GARCH models. Now I try to fit the high-frequency univariate model into multivariate model for intraday trading.
+<span style='color:goldenrod'>*binary.com Interview Question I - Interday High Frequency Trading*</span> suggest a better model for interday trading, <span style='color:goldenrod'>*binary.com Interview Question I - Multivariate GARCH Models*</span> compares the multivariate GARCH models. Now I try to fit the high-frequency univariate model into multivariate model for intraday trading.
 
 [Convert multivariate XTS to TS in R](https://stackoverflow.com/questions/44250867/convert-multivariate-xts-to-ts-in-r) using `wavethresh` package.
 
 # Data
+
+[An R interface to `zipline`](https://www.quantopian.com/posts/an-r-interface-to-zipline) introduce a r package `flyingfox` which is others than `Quandl` who provides a channel to get datasets. [Tushare Pro 新版发布，数据更稳定质量更好](http://tushare.org/classifying.html) is another data providing website. By the way, [金融阶 - 金融人才猎聘专家](https://www.jrjhr.com) is a recruitment website for financial market.
 
 I gather the tick-data via [FXCMTickData](https://github.com/fxcm/MarketData) for high frequency trading.
 
@@ -92,7 +97,7 @@ I gather the tick-data via [FXCMTickData](https://github.com/fxcm/MarketData) fo
 - <s>USDCNY</s>
 - USDJPY
 
-*binary.com Interview Question I - Tick-Data-HiLo For Daily Trading <span style='color:red'>(Blooper)</span>* try to use the intraday of USDJPY and filter to get only highest `bid` and lowest `ask` to determine if there is a buy or a sell transaction (or no transaction) within a day. The reason of the paper tag as <span style='color:red'>(Blooper)</span> had explained inside that paper.
+<span style='color:goldenrod'>*binary.com Interview Question I - Tick-Data-HiLo For Daily Trading </span><span style='color:red'>(Blooper)</span>* try to use the intraday of USDJPY and filter to get only highest `bid` and lowest `ask` to determine if there is a buy or a sell transaction (or no transaction) within a day. The reason of the paper tag as <span style='color:red'>*(Blooper)*</span> had explained inside that paper.
 
 Below I gather and filter the dataset.
 
@@ -420,7 +425,7 @@ getSymbols('AAPL', src='av', api.key=api, periodicity='intraday')
 
 ## Future Works
 
-The *Markov Hidden Model* and *Autoregressive Markov Switching Model* in *解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法* will be in another study.
+The *Markov Hidden Model* and *Autoregressive Markov Switching Model* in <span style='color:goldenrod'>*解密复兴科技 - 基于隐蔽马尔科夫模型的时序分析方法*</span> will be in another study.
 
 API skill need to learn in order to write a real algothmic trading website.
 
@@ -447,23 +452,25 @@ It's useful to record some information about how your file was created.
 - Additional session information:
 
 ```{r info, echo=FALSE, warning=FALSE, results='asis'}
-suppressMessages(require('dplyr', quietly = TRUE))
-suppressMessages(require('formattable', quietly = TRUE))
-suppressMessages(require('knitr', quietly = TRUE))
-suppressMessages(require('kableExtra', quietly = TRUE))
-
-sys1 <- devtools::session_info()$platform %>% 
+sys1 <- session_info()$platform %>% 
   unlist %>% data.frame(Category = names(.), session_info = .)
 rownames(sys1) <- NULL
 
-sys1 %<>% rbind(., data.frame(
-  Category = 'Current time', 
-  session_info = paste(as.character(lubridate::now('Asia/Tokyo')), 'JST'))) %>% 
-  dplyr::filter(Category != 'os')
-
-sys2 <- data.frame(Sys.info()) %>% mutate(Category = rownames(.)) %>% .[2:1]
+sys2 <- data.frame(Sys.info()) %>% 
+  mutate(Category = rownames(.)) %>% 
+  .[2:1]
 names(sys2)[2] <- c('Sys.info')
 rownames(sys2) <- NULL
+
+if (nrow(sys1) == 7 & nrow(sys2) == 8) {
+  sys1 %<>% rbind(., data.frame(
+  Category = 'Current time', 
+  session_info = paste(as.character(lubridate::now('Asia/Tokyo')), 'JST')))
+} else {
+  sys2 %<>% rbind(., data.frame(
+  Category = 'Current time', 
+  Sys.info = paste(as.character(lubridate::now('Asia/Tokyo')), 'JST')))
+}
 
 cbind(sys1, sys2) %>% 
   kable(caption = 'Additional session information:') %>% 
@@ -486,7 +493,8 @@ rm(sys1, sys2)
 10. [Markov-Switching Autoregressive Models for Wind Times Series](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Markov-Switching%20Autoregressive%20Models%20for%20Wind%20Time%20Series.pdf)
 12. [Modelling Exchange Rates using Regime Switching Models](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Modelling%20Exchange%20Rates%20using%20Regime%20Switching%20Models.pdf)
 13. [Financial Risk Modelling and Portfolio Optimization with R (2nd Edt)](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Financial%20Risk%20Modelling%20and%20Portfolio%20Optimization%20with%20R%20(2nd%20Edt).pdf)
+14. [量化交易 - 如何建立自己的算法交易事业](https://github.com/englianhu/data-analysis/blob/master/reference/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93%20-%20%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B%E8%87%AA%E5%B7%B1%E7%9A%84%E7%AE%97%E6%B3%95%E4%BA%A4%E6%98%93%E4%BA%8B%E4%B8%9A.pdf)
 
 ---
 
-**Powered by - Copyright® Intellectual Property Rights of <img src='www/oda-army2.jpg' width='24'> [Scibrokes®](http://www.scibrokes.com)個人の経営企業**
+<span style='color:RoyalBlue'>**Powered by - Copyright® Intellectual Property Rights of [<img src='www/scb_logo.jpg' width='64'>®](http://www.scibrokes.com)個人の経営企業**</span>
