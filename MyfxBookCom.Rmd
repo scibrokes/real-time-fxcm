@@ -1,0 +1,1334 @@
+---
+title: "<span style='color:Red'>myfxbook.Com</span>"
+subtitle: "Forex Trading Platform Comparison"
+author: "®γσ ξηg <img src='www/Me byteDance.jpg' width='24'>"
+date: "`r lubridate::today('Asia/Tokyo')`"
+output:
+  html_document: 
+    mathjax: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+    number_sections: yes
+    toc: yes
+    toc_depth: 4
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+    code_folding: hide
+    css: CSSBackgrounds.css
+---
+
+<br>
+
+# 简介
+
+<br>
+
+```{r message=FALSE, warning=FALSE, results='asis'}
+## 3210448065@qq.com
+## leiou123
+
+## 2849108450@qq.com
+## leiou123
+## https://rstudio.cloud/project/1198888
+
+if(!require('BBmisc')) {install.packages('BBmisc', dependencies = TRUE, 
+                                         INSTALL_opts = '--no-lock')}
+require('BBmisc')
+pkg <- c('plyr', 'tidyverse', 'magrittr', 'readr', 'readxl', 'tidyr', 'MASS', 
+         'knitr', 'kableExtra', 'forecast', 'formattable', 'DT', 'echarts4r', 
+         'lubridate', 'highcharter', 'htmltools', 'readr', 'pryr', 'sparklyr', 
+         'lme4', 'microbenchmark', 'polynom', 'multipol', 'splines', 'leaps', 
+         'highr', 'dplyr', 'pacman', 'lme4', 'nlme')
+
+#plyr::l_ply(pkg, require, quietly = TRUE, character.only = TRUE, .print = FALSE)
+suppressAll(lib(pkg))
+rm(pkg)
+#sc <- spark_connect(master = 'local')
+```
+
+当初在推广部门，**宋祖：宋组长**给个样本数据，我就尝试使用线性模型和时间序列`arima`模型分析了进粉业绩，详情请参考[阿里彩票 - 分析样本数据](https://rpubs.com/englianhu/ali)^[基于数据观测值太少^[[binary.com Interview Question I (Extention)](https://rpubs.com/englianhu/binary-Q1E)尝试分别使用`3个月`、`6个月`、`12个月`、`18个月`和`24个月`的数据，结果`12个月`的数据最为精准。]，所以暂时没有预测。]。然后转到运维部门分析了[阿里彩票 - 彩种报告](https://rpubs.com/englianhu/ali_bet_type)，只是基本分析彩种，将数据视觉化；此商业分析进一步使用混合线性模型分析数据，预测彩种盈利。
+
+<br>
+<br>
+
+# 数据
+
+<br>
+
+读取样本数据。
+
+```{r, results = 'asis', warning = FALSE}
+## 读取数据
+fls <- suppressWarnings(list.files('data/彩种'))
+smp <- fls %>% llply(., function(x) {
+    dtt <- x %>% str_replace_all('.xls', '') %>% ymd
+    smpp <- read_excel(paste0('data/彩种/', x)) %>% 
+      .[-nrow(.),]
+    data.frame('日期' = dtt, smpp)
+}) %>% bind_rows %>% 
+    as_tibble %>% 
+    mutate('彩种名称' = factor(彩种名称), '盈率' = as.numeric(percent(盈率))) %>% 
+    mutate_if(is.character, as.numeric)
+rm(fls)
+
+nm <- names(smp)
+names(smp) <- c('Date', 'Type', 'Bettor', 'Turnover', 'Won', 'Cancelled', 'Rebates', 'Profit', 'Profit_rate')
+
+## 转化为大数据
+smp2 <- smp
+#smp2 <- copy_to(sc, smp2)
+
+# smp2 %>% 
+#   as_tibble %>% 
+#   kbl('html', caption = '每日投注人数', escape = F) %>% 
+#   kable_styling(
+#     bootstrap_options = c('striped', 'hover', 'condensed', 'responsive')) %>% 
+#   scroll_box(height = '400px')
+```
+
+```{r}
+smp %>% glimpse
+```
+
+<span style='color:Orange'>*图表2.1：数据简介*</span>
+
+<s>上图</s>[阿里彩票 - 彩种报告](https://rpubs.com/englianhu/ali_bet_type)显示从`r smp$Date %>% range %>% .[1]`到`r smp$Date %>% range %>% .[2]`的报表数据，一共有`r nrow(smp2)`个观测值。
+
+<br>
+<br>
+
+# 统计模型
+
+<br>
+
+## 多元相互式模型
+
+<br>
+
+以下数据显示每日投注人数。
+
+```{r, results = 'asis', warning = FALSE}
+# smp2 %>%
+#     spark_apply(
+#         function(e) summary(lm(Profit ~ Turnover * Bettor * Won, e))$r.squared,
+#         names = 'r.squared',
+#         group_by = 'Type')
+
+# 每日观测值
+smp2 %>% 
+    ddply(.(Date), nrow) %>% 
+    as_tibble %>% dplyr::rename(n = V1) %>% 
+  ## https://www.colorhexa.com/color-names
+  mutate(n = color_tile('#007fff', 'white')(n)) %>% #azure
+  kbl('html', caption = '每日投注人数', escape = F, align = 'c') %>% 
+  kable_styling(
+    bootstrap_options = c('striped', 'hover', 'condensed', 'responsive')) %>% 
+  scroll_box(height = '400px')
+```
+
+<span style='color:Orange'>*图表3.1.1：每日观测值*</span>
+
+<br>
+
+我不晓得最优模型，先以完整数据观测值为标准，以下乃`多元相互式模型`^[[如何 Estimate linear models](https://d.cosx.org/d/419820-estimate-linear-models/7)中的[UNDERSTANDING 3-WAY INTERACTIONS BETWEEN CONTINUOUS VARIABLES](https://tomhouslay.com/2014/03/21/understanding-3-way-interactions-between-continuous-variables/#comment-63365)]。
+
+$$
+\begin{align*}
+ Y& = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \beta_{3}X_{1}X_{2}\\ 
+ &= \beta_{0} + {\color{Red} \widetilde{\beta_{1}}}X_{1} + \beta_{2}X_{2}; 
+ {\color{Red} \widetilde{\beta_{1}}} = \beta_{1} + \beta_{2}X_{2}\\
+\end{align*}
+$$
+<span style='color:Orange'>*方程3.1.1：多元相互式模型*（[*在线LaTEX方程编辑器*](https://www.codecogs.com/latex/eqneditor.php)）</span>
+
+```{r, results = 'asis', eval = FALSE, warning = FALSE}
+# lm1 <- lm(Profit ~ Type * Bettor * Turnover * Won * Cancelled * Rebates, smp2)
+
+# m.aic.backward1 <- step(lm1, direction = 'backward', trace = 1)
+# m.aic.backward2 <- step(lm1)
+
+md <- list(
+  m00 = lm(Profit ~ Date * Type * Bettor * Turnover * Won * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m01 = lm(Profit ~ Type * Bettor * Turnover * Won * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m02 = lm(Profit ~ Type * Bettor * Turnover * Won * Cancelled, smp2) %>% extractAIC, 
+  m03 = lm(Profit ~ Type * Bettor * Turnover * Won * Rebates, smp2) %>% extractAIC, 
+  m04 = lm(Profit ~ Type * Bettor * Turnover * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m05 = lm(Profit ~ Type * Bettor * Won * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m06 = lm(Profit ~ Type * Turnover * Won * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m07 = lm(Profit ~ Bettor * Turnover * Won * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m08 = lm(Profit ~ Type * Bettor * Turnover * Won, smp2) %>% extractAIC, 
+  m09 = lm(Profit ~ Type * Bettor * Turnover * Rebates, smp2) %>% extractAIC, 
+  m10 = lm(Profit ~ Type * Won * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m11 = lm(Profit ~ Type * Bettor * Turnover * Cancelled, smp2) %>% extractAIC, 
+  m12 = lm(Profit ~ Type * Bettor * Won * Rebates, smp2) %>% extractAIC, 
+  m13 = lm(Profit ~ Type * Bettor * Won * Cancelled, smp2) %>% extractAIC, 
+  m14 = lm(Profit ~ Type * Turnover * Won * Rebates, smp2) %>% extractAIC, 
+  m15 = lm(Profit ~ Type * Turnover * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m16 = lm(Profit ~ Type * Turnover * Won * Rebates, smp2) %>% extractAIC, 
+  m17 = lm(Profit ~ Type * Won * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m18 = lm(Profit ~ Bettor * Turnover * Won * Cancelled, smp2) %>% extractAIC, 
+  m19 = lm(Profit ~ Bettor * Turnover * Won * Rebates, smp2) %>% extractAIC, 
+  m20 = lm(Profit ~ Bettor * Turnover * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m21 = lm(Profit ~ Type * Bettor * Turnover * Won * Cancelled * Rebates, smp2) %>% extractAIC, 
+  m22 = lm(Profit ~ Turnover * Won * Cancelled * Rebates, smp2) %>% extractAIC) %>% 
+  ldply %>% 
+  as_tibble %>% 
+  dplyr::rename(df = V1, AIC = V2)
+
+## save files, easier to read.
+microbenchmark(
+   save(md, file = 'data/md.rda'), 
+   write_rds(md, 'data/md.rds'), 
+   saveRDS(md, file = 'data/md.rds'))
+#Unit: microseconds
+#                                expr     min       lq     mean   median      uq     max neval
+#      save(md, "data/md.rda") 114.666 130.9080 135.2061 134.3990 137.111 174.759   100
+# write_rds(md, "data/md.rds") 111.098 120.6370 126.8601 125.1935 129.534 178.582   100
+#   saveRDS(md, "data/md.rds") 143.649 160.3135 178.6935 183.2730 186.673 358.803   100
+```
+
+1) $m00 = lm(Profit \sim Date * Type * Bettor * Turnover * Won * Cancelled * Rebates, smp2)$
+2) $m01 = lm(Profit \sim Type * Bettor * Turnover * Won * Cancelled * Rebates, smp2)$
+3) $m02 = lm(Profit \sim Type * Bettor * Turnover * Won * Cancelled, smp2)$
+4) $m03 = lm(Profit \sim Type * Bettor * Turnover * Won * Rebates, smp2)$
+5) $m04 = lm(Profit \sim Type * Bettor * Turnover * Cancelled * Rebates, smp2)$
+6) $m05 = lm(Profit \sim Type * Bettor * Won * Cancelled * Rebates, smp2)$
+7) $m06 = lm(Profit \sim Type * Turnover * Won * Cancelled * Rebates, smp2)$
+8) $m07 = lm(Profit \sim Bettor * Turnover * Won * Cancelled * Rebates, smp2)$
+9) $m08 = lm(Profit \sim Type * Bettor * Turnover * Won, smp2)$
+10) $m09 = lm(Profit \sim Type * Bettor * Turnover * Rebates, smp2)$
+11) $m10 = lm(Profit \sim Type * Won * Cancelled * Rebates, smp2)$
+12) $m11 = lm(Profit \sim Type * Bettor * Turnover * Cancelled, smp2)$
+13) $m12 = lm(Profit \sim Type * Bettor * Won * Rebates, smp2)$
+14) $m13 = lm(Profit \sim Type * Bettor * Won * Cancelled, smp2)$
+15) $m14 = lm(Profit \sim Type * Turnover * Won * Rebates, smp2)$
+16) $m15 = lm(Profit \sim Type * Turnover * Cancelled * Rebates, smp2)$
+17) $m16 = lm(Profit \sim Type * Turnover * Won * Rebates, smp2)$
+18) $m17 = lm(Profit \sim Type * Won * Cancelled * Rebates, smp2)$
+19) $m18 = lm(Profit \sim Bettor * Turnover * Won * Cancelled, smp2)$
+20) $m19 = lm(Profit \sim Bettor * Turnover * Won * Rebates, smp2)$
+21) $m20 = lm(Profit \sim Bettor * Turnover * Cancelled * Rebates, smp2)$
+22) $m21 = lm(Profit \sim Type * Bettor * Turnover * Won * Cancelled * Rebates, smp2)$
+23) $m22 = lm(Profit \sim Turnover * Won * Cancelled * Rebates, smp2)$
+
+<span style='color:Orange'>*方程3.1：多元相互式模型*</span>
+
+以上模型使用$lm()$函数，从模型$m00 \sim m22$，[How to Make Beautiful Tables in R](https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/)有很多桌表程序包，以下咱们比较下**最优模型**。
+
+<br>
+
+### formattable
+
+<br>
+
+```{r, results = 'asis', warning = FALSE}
+md <- read_rds('data/md.rds')
+md2 <- md
+
+## https://www.colorhexa.com/color-names
+md2 %>% 
+  formattable(
+    list(
+        AIC = formatter('span', style = x ~ formattable::style(
+            color = ifelse(rank(x) <= 3, 'darkgoldenrod', 'grey')), 
+            x ~ paste0(round(x, 2), 
+                       ' (rank: ', sprintf('%1.f', rank(x)), ')')))) %>% 
+    mutate(df = color_tile('#2a52be', 'white')(df)) #colbalt
+```
+
+<span style='color:Orange'>*方程3.1.1：最优多元相互式模型AIC比较*</span>
+
+<br>
+
+### kableExtra
+
+<br>
+
+```{r, results = 'asis', warning = FALSE}
+## https://www.colorhexa.com/color-names
+md2 %>% 
+  mutate(
+    df = color_tile('#2a52be', 'white')(df), #colbalt
+    AIC = ifelse(
+      rank(AIC) <= 3, 
+      cell_spec(
+        paste0(round(AIC, 2), ' (rank: ', sprintf('%1.f', rank(AIC)), ')'), 
+        'html', color = 'darkgoldenrod', bold = T), 
+      cell_spec(
+        paste0(round(AIC, 2), ' (rank: ', sprintf('%1.f', rank(AIC)), ')'), 
+        'html', color = 'grey', italic = T))) %>% 
+  kbl('html', caption = '最优模型', escape = F, align = c('c', 'r', 'r')) %>% 
+  kable_styling(
+    bootstrap_options = c('striped', 'hover', 'condensed', 'responsive')) %>% 
+  kable_material() %>% 
+  scroll_box(height = '400px')
+```
+
+<span style='color:Orange'>*方程3.1.2：最优多元相互式模型AIC比较*</span>
+
+<br>
+
+以下模型乃前三榜，分别是$m00$所有因素，包括时间序列参数因素；$m07$忽略彩种因素；$m22$只包括`投注金额`、`中奖金额`、`撤单金额`和`返点金额`因素。
+
+1) $m00 = lm(Profit \sim Date * Type * Bettor * Turnover * Won * Cancelled * Rebates, smp2)$
+8) $m07 = lm(Profit \sim Bettor * Turnover * Won * Cancelled * Rebates, smp2)$
+23) $m22 = lm(Profit \sim Turnover * Won * Cancelled * Rebates, smp2)$
+
+<span style='color:Orange'>*方程3.2.1：多元相互式模型*</span>
+
+<span style='color:Red'>**备注**：以上最优模型加入时间变量，不过之后章节的时间序列模型，也得个别分析**$m00$**和**$m07$**，因为已经把时间变量加入分析，再加上时间序列的话，不晓得是否变质呢？</span>
+
+<br>
+<br>
+
+## 多元多项式模型
+
+<br>
+
+### 多元正交与原始多项式模型
+
+<br>
+
+#### 多元多项式基本模型
+
+<br>
+
+- [关于r：拟合由`leaps :: regsubsets`选择的多项式回归模型](https://www.codenong.com/51223897)有举例，还介绍了`leaps`程序包。
+- [lm()中的poly(): raw和正交之間的差異](https://www.itdaan.com/tw/c0fe14f3fda89205497a506bf9e9c119)
+- [R实现Polynomial regression](https://www.jianshu.com/p/8e6cc12d3036)
+- [多项式回归（Polynomial regression）及线性检验](https://www.bioinfo-scrounger.com/archives/polynomial-regression)
+- [How to interpret coefficients from a polynomial model fit?](https://stats.stackexchange.com/a/95952/68357)
+- [poly() in lm(): difference between raw vs. orthogonal](https://stackoverflow.com/a/30000214/3806250)
+- [Fitting Polynomial Regression in R](https://www.r-bloggers.com/2015/09/fitting-polynomial-regression-in-r)^[Section**How to fit a polynomial regression** in [Fitting Polynomial Regression in R](https://www.r-bloggers.com/2015/09/fitting-polynomial-regression-in-r) ]
+- [Raw or orthogonal polynomial regression?](https://stats.stackexchange.com/questions/258307/raw-or-orthogonal-polynomial-regression)
+- [Multivariate polynomials in R (`polynom` package)](https://cran.r-project.org/web/packages/multipol/vignettes/multipol.pdf)^[[Multivariate polynomials in R (`polynom` package)](https://cran.r-project.org/web/packages/multipol/vignettes/multipol.pdf)可供R使用者使用多元非线性模型]
+- [Multivariate Polynomial Regression in R (Prediction)](https://stackoverflow.com/a/50261058/3806250)
+- [Polynomial regression with multiple independent variables in R](https://stackoverflow.com/questions/45013550/polynomial-regression-with-multiple-independent-variables-in-r)
+
+![<span style='color:Orange'>*图像3.2.1：多项式线型模型*</span> [*Fitting Polynomial Regression in R*](https://www.r-bloggers.com/2015/09/fitting-polynomial-regression-in-r)](figure/How to fit a polynomial regression 2.png)
+
+<span style='color:Red'>**备注**：[lm() breaks when using poly() with predictors set up as factors](https://stackoverflow.com/a/61410867/3806250)讲述`poly`无法分析多元`factor`而只能分析虚拟变量（0或1）。</span>
+
+$$
+Y = \beta_{0} + \beta_{1}X_{1} + \beta_{11}X^{2} + \beta_{111}X^{3}
+$$
+
+<span style='color:Orange'>*方程3.1.2：多元多项式线型模型*</span>
+
+<br>
+
+##### 多元多项相互式正交模型
+
+<br>
+
+```{r, results = 'asis', eval = FALSE, warning = FALSE}
+## https://stackoverflow.com/a/24133767/3806250
+num <- 2:5
+
+mprf_list <- llply(num, function(i) {
+    mprf = list(
+        #p00 = lm(Profit ~ 
+        #         poly(Date, degree = i, raw = FALSE) * 
+        #         poly(Bettor, degree = i, raw = FALSE) * 
+        #         poly(Turnover, degree = i, raw = FALSE) * 
+        #         poly(Won, degree = i, raw = FALSE) * 
+        #         poly(Cancelled, degree = i, raw = FALSE) * 
+        #         poly(Rebates, degree = i, raw = FALSE), smp2) %>% extractAIC, 
+        {p01 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p01'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p01, paste0('data/mprf', i, '_p01.rds'))}, 
+        {p02 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p02'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p02, paste0('data/mprf', i, '_p02.rds'))}, 
+        {p03 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p03'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p03, paste0('data/mprf', i, '_p03.rds'))}, 
+        {p04 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p04'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p04, paste0('data/mprf', i, '_p04.rds'))}, 
+        {p05 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p05'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p05, paste0('data/mprf', i, '_p05.rds'))}, 
+        {p06 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p06'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p06, paste0('data/mprf', i, '_p06.rds'))}, 
+        {p07 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p07'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p07, paste0('data/mprf', i, '_p07.rds'))}, 
+        {p08 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p08'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p08, paste0('data/mprf', i, '_p08.rds'))}, 
+        {p09 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p09'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p09, paste0('data/mprf', i, '_p09.rds'))}, 
+        {p10 = lm(Profit ~ 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p10'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p10, paste0('data/mprf', i, '_p10.rds'))}, 
+        {p11 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p11'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p11, paste0('data/mprf', i, '_p11.rds'))}, 
+        {p12 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p12'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p12, paste0('data/mprf', i, '_p12.rds'))}, 
+        {p13 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p13'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p13, paste0('data/mprf', i, '_p13.rds'))}, 
+        {p14 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p14'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p14, paste0('data/mprf', i, '_p14.rds'))}, 
+        {p15 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p15'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p15, paste0('data/mprf', i, '_p15.rds'))}, 
+        {p16 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p16'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p16, paste0('data/mprf', i, '_p16.rds'))}, 
+        {p17 = lm(Profit ~ 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p17'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p17, paste0('data/mprf', i, '_p17.rds'))}, 
+        {p18 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p18'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p18, paste0('data/mprf', i, '_p18.rds'))}, 
+        {p19 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p19'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p19, paste0('data/mprf', i, '_p19.rds'))}, 
+        {p20 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p20'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p20, paste0('data/mprf', i, '_p20.rds'))}, 
+        {p21 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = FALSE) * 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p21'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p21, paste0('data/mprf', i, '_p21.rds'))}, 
+        {p22 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = FALSE) * 
+                     poly(Won, degree = i, raw = FALSE) * 
+                     poly(Cancelled, degree = i, raw = FALSE) * 
+                     poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprf_p22'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p22, paste0('data/mprf', i, '_p22.rds'))}
+    ) %>% 
+        ldply %>% 
+        as_tibble
+    
+    ## save files, easier to read.
+    #write_rds(mprf, paste0('data/mprf', i, '.rds'))
+})
+```
+
+<br>
+
+##### 多元多项相互式原始模型
+
+<br>
+
+```{r, results = 'asis', eval = FALSE, warning = FALSE}
+## https://stackoverflow.com/a/24133767/3806250
+num <- 2:5
+
+mprt_list <- llply(num, function(i) {
+    mprt = list(
+        #p00 = lm(Profit ~ 
+        #         poly(Date, degree = i, raw = TRUE) * 
+        #         poly(Bettor, degree = i, raw = TRUE) * 
+        #         poly(Turnover, degree = i, raw = TRUE) * 
+        #         poly(Won, degree = i, raw = TRUE) * 
+        #         poly(Cancelled, degree = i, raw = TRUE) * 
+        #         poly(Rebates, degree = i, raw = TRUE), smp2) %>% extractAIC, 
+        {p01 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p01'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p01, paste0('data/mprt', i, '_p01.rds'))}, 
+        {p02 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p02'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p02, paste0('data/mprt', i, '_p02.rds'))}, 
+        {p03 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p03'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p03, paste0('data/mprt', i, '_p03.rds'))}, 
+        {p04 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p04'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p04, paste0('data/mprt', i, '_p04.rds'))}, 
+        {p05 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p05'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p05, paste0('data/mprt', i, '_p05.rds'))}, 
+        {p06 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p06'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p06, paste0('data/mprt', i, '_p06.rds'))}, 
+        {p07 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p07'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p07, paste0('data/mprt', i, '_p07.rds'))}, 
+        {p08 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p08'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p08, paste0('data/mprt', i, '_p08.rds'))}, 
+        {p09 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p09'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p09, paste0('data/mprt', i, '_p09.rds'))}, 
+        {p10 = lm(Profit ~ 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p10'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p10, paste0('data/mprt', i, '_p10.rds'))}, 
+        {p11 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p11'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p11, paste0('data/mprt', i, '_p11.rds'))}, 
+        {p12 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p12'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p12, paste0('data/mprt', i, '_p12.rds'))}, 
+        {p13 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p13'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p13, paste0('data/mprt', i, '_p13.rds'))}, 
+        {p14 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p14'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p14, paste0('data/mprt', i, '_p14.rds'))}, 
+        {p15 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p15'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p15, paste0('data/mprt', i, '_p15.rds'))}, 
+        {p16 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p16'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p16, paste0('data/mprt', i, '_p16.rds'))}, 
+        {p17 = lm(Profit ~ 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p17'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p17, paste0('data/mprt', i, '_p17.rds'))}, 
+        {p18 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p18'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p18, paste0('data/mprt', i, '_p18.rds'))}, 
+        {p19 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p19'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p19, paste0('data/mprt', i, '_p19.rds'))}, 
+        {p20 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p20'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p20, paste0('data/mprt', i, '_p20.rds'))}, 
+        {p21 = lm(Profit ~ 
+                     poly(Bettor, degree = i, raw = TRUE) * 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p21'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p21, paste0('data/mprt', i, '_p21.rds'))}, 
+        {p22 = lm(Profit ~ 
+                     poly(Turnover, degree = i, raw = TRUE) * 
+                     poly(Won, degree = i, raw = TRUE) * 
+                     poly(Cancelled, degree = i, raw = TRUE) * 
+                     poly(Rebates, degree = i, raw = TRUE), smp2) %>% 
+          extractAIC %>% 
+          as_tibble %>% 
+          t %>% as_tibble %>% 
+          dplyr::rename(df = V1, AIC = V2) %>% 
+          mutate(.md = paste0('mprt_p22'), degree = i, raw = TRUE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p22, paste0('data/mprt', i, '_p22.rds'))}
+    ) %>% 
+        ldply %>% 
+        as_tibble
+    
+    ## save files, easier to read.
+    #write_rds(mprt, paste0('data/mprt', i, '.rds'))
+})
+```
+
+<br>
+
+#### 多元多项相互式程度最优化
+
+以下文章聊及多元多项相互式线型模型程度最优化。
+
+```
+To get a third order polynomial in x (x^3), you can do
+
+lm(y ~ x + I(x^2) + I(x^3))
+or
+
+lm(y ~ poly(x, 3, raw=TRUE))
+You could fit a 10th order polynomial and get a near-perfect fit, but should you?
+
+EDIT: poly(x, 3) is probably a better choice (see @hadley below).
+```
+
+*出处：*[*Fitting polynomial model to data in R*](https://stackoverflow.com/a/3822706/3806250)
+
+```
+But what I want to say is that a polynomial of more than 3-5 degree is never useful! The critical reason is the Runge's phenomenon. In terms of statistical terminology: a high-order polynomial always badly overfits data!. Don't naively think that because orthogonal polynomials are numerically more stable than raw polynomials, Runge's effect can be eliminated. No, a polynomial of degree k forms a vector space, so whatever basis you use for representation, they have the same span!
+```
+
+*出处：*[*High (or very high) order polynomial regression in R (or alternatives?)*](https://stackoverflow.com/a/39803843/3806250)
+
+```
+Deciding on a degree
+In performing a polynomial regression we must decide on the degree of the polynomial to use. One way to do this is by using hypothesis tests. We now fit models ranging from linear to a degree-5 polynomial and seek to determine the simplest model which is sufficient to explain the relationship between wage and age.
+
+We can do this using the anova() function, which performs an analysis of variance (ANOVA, using an F-test) in order to test the null hypothesis that a model  M1  is sufficient to explain the data against the alternative hypothesis that a more complex model  M2  is required. In order to use the anova() function,  M1  and  M2  must be nested models: the predictors in  M1  must be a subset of the predictors in  M2 . In this case, we fit five different models and sequentially compare the simpler model to the more complex model:
+
+fit_1 = lm(wage~age, data = Wage)
+fit_2 = lm(wage~poly(age,2), data = Wage)
+fit_3 = lm(wage~poly(age,3), data = Wage)
+fit_4 = lm(wage~poly(age,4), data = Wage)
+fit_5 = lm(wage~poly(age,5), data = Wage)
+print(anova(fit_1,fit_2,fit_3,fit_4,fit_5))
+```
+[*7.8.1 Polynomial Regression and Step Functions7.8.1 Polynomial Regression and Step Functions*](http://www.science.smith.edu/~jcrouser/SDS293/labs/lab12-r.html#Deciding-on-a-degree)
+
+![<span style='color:Orange'>*图像3.2.2a：分层多项式线型模型*</span> [*High (or very high) order polynomial regression in R (or alternatives?)*](https://stackoverflow.com/a/39803843/3806250)](figure/polynomials and orthogonal polymials.png)
+
+![<span style='color:Orange'>*图像3.2.2b：分层多项式线型模型*</span> [*High (or very high) order polynomial regression in R (or alternatives?)*](https://stackoverflow.com/a/39803843/3806250)](figure/polynomials and orthogonal polymials 2.png)
+
+![<span style='color:Orange'>*图像3.2.2c：分层多项式线型模型*</span> [*High (or very high) order polynomial regression in R (or alternatives?)*](https://stackoverflow.com/a/39803843/3806250)](figure/polynomials and orthogonal polymials 3.png)
+
+![<span style='color:Orange'>*图像3.2.3a：拟合由`leaps :: regsubsets`选择的多项式回归模型*</span> [*关于r：拟合由`leaps :: regsubsets`选择的多项式回归模型*](https://www.codenong.com/51223897)](figure/拟合由leaps regsubsets选择的多项式回归模型1.png)
+
+![<span style='color:Orange'>*图像3.2.3b：拟合由`leaps :: regsubsets`选择的多项式回归模型*</span> [*关于r：拟合由`leaps :: regsubsets`选择的多项式回归模型*](https://www.codenong.com/51223897)](figure/拟合由leaps regsubsets选择的多项式回归模型2.png)
+
+```{r}
+mdp <- dir('data', pattern = '^mp') %>% 
+    ldply(., function(x) {
+        read_rds(paste0('data/', x))
+    }) %>% 
+    as_tibble
+```
+
+```{r}
+mdp %>% 
+  mutate(
+    df = color_tile('#2a52be', 'white')(df), #colbalt
+    AIC = ifelse(
+      rank(AIC) <= 3, 
+      cell_spec(
+        paste0(round(AIC, 2), ' (rank: ', sprintf('%1.f', rank(AIC)), ')'), 
+        'html', color = 'darkgoldenrod', bold = T), 
+      cell_spec(
+        paste0(round(AIC, 2), ' (rank: ', sprintf('%1.f', rank(AIC)), ')'), 
+        'html', color = 'grey', italic = T))) %>% 
+  kbl('html', caption = '分组最优模型', escape = F, align = c('c', 'r', 'r')) %>% 
+  kable_styling(
+    bootstrap_options = c('striped', 'hover', 'condensed', 'responsive')) %>% 
+  kable_material() %>% 
+  pack_rows('多项式回归 2', 1, 22, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式回归 3', 23, 44, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式回归 4', 45, 65, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式回归 5', 67, 88, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式正交回归 2', 89, 110, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式正交回归 3', 111, 132, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式正交回归 4', 133, 154, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式正交回归 5', 155, 176, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式原始回归 2', 177, 198, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式原始回归 3', 199, 220, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式原始回归 4', 221, 242, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  pack_rows('多项式原始回归 5', 243, 264, label_row_css = 'background-color: #666; color: #fff;') %>% 
+  scroll_box(height = '400px')
+```
+
+<span style='color:Orange'>*图表3.2.1.1：分组最优模型*</span>
+
+```{r}
+mdp %>% 
+  arrange(AIC) %>% 
+  mutate(
+    df = color_tile('#2a52be', 'white')(df), #colbalt
+    AIC = ifelse(
+      rank(AIC) <= 3, 
+      cell_spec(
+        paste0(round(AIC, 2), ' (rank: ', sprintf('%1.f', rank(AIC)), ')'), 
+        'html', color = 'darkgoldenrod', bold = T), 
+      cell_spec(
+        paste0(round(AIC, 2), ' (rank: ', sprintf('%1.f', rank(AIC)), ')'), 
+        'html', color = 'grey', italic = T))) %>% 
+  kbl('html', caption = '最优模型排行榜', escape = F, align = c('c', 'r', 'r')) %>% 
+  kable_styling(
+    bootstrap_options = c('striped', 'hover', 'condensed', 'responsive')) %>% 
+  kable_material() %>% 
+  scroll_box(height = '400px')
+```
+
+<span style='color:Orange'>*图表3.2.1.2：最优模型排行榜*</span>
+
+<span style='color:Red'>**备注：由于耗时，以上多元多项式模型并无将模型内的参数个别优化**`p22 = lm(Profit ~ poly(Turnover, degree = 2, raw = TRUE) * ` `poly(Won, degree = 3, raw = TRUE) * ` `poly(Cancelled, degree = 4, raw = TRUE) * ` `poly(Rebates, degree = 5, raw = TRUE), smp2)`</span>^[[binary.com 面试试题 I - GARCH模型中的ARIMA(p,d,q)参数最优化](https://rpubs.com/englianhu/binary-Q1FiGJRGARCH)虽然是单变量模型，不过会自动高效处理并筛选最优`arima(p,d,q)`参数]
+
+<br>
+<br>
+
+## 多元内嵌模型
+
+<br>
+
+以下文献包含`多元相互式模型`、`多项式模型`、`多元内嵌模型`。
+
+- [如何 Estimate linear models](https://d.cosx.org/d/419820-estimate-linear-models)和[`lm()`包中formula 表达方法的问题](https://d.cosx.org/d/157623-157623)^[多相互作用和内嵌线性模型]
+- [R-Blog : Using R and lme/lmer to fit different two- and three-level longitudinal models](https://www.r-bloggers.com/2015/04/using-r-and-lmelmer-to-fit-different-two-and-three-level-longitudinal-models/)^[原稿:[Using R and lme/lmer to fit different two- and three-level longitudinal models](https://rpsychologist.com/r-guide-longitudinal-lme-lmer)多元内嵌线型模型]
+- [Linear Regression and group by in R](https://stats.stackexchange.com/questions/31204/why-do-i-get-wildly-different-results-for-polyraw-t-vs-poly)
+- [using lm(poly) to get formula coeff[duplicate]](https://stackoverflow.com/questions/17457884/using-lmpoly-to-get-formula-coeff)
+- [Fitting polynomial model to data in R](https://stackoverflow.com/questions/3822535/fitting-polynomial-model-to-data-in-r)
+- [R LME4 mixed models with nesting and nesting-interactions](https://stackoverflow.com/questions/62423505/r-lme4-mixed-models-with-nesting-and-nesting-interactions)
+- [lmer poly() function on interactions](https://stackoverflow.com/questions/58943913/lmer-poly-function-on-interactions)^[内嵌多项式线型模型(Polynomial Regression)]
+
+```{r, eval = FALSE}
+dir('data', pattern = '^m.+rds$') %>% 
+    ldply(., function(x) {
+        read_rds(paste0('data/', x))
+    }) %>% arrange(AIC) %>% 
+    dplyr::slice(1:5) %>% 
+  mutate(
+    df = color_tile('#2a52be', 'white')(df), #colbalt
+    AIC = ifelse(
+      rank(AIC) <= 3, 
+      cell_spec(
+        paste0(round(AIC, 2), ' (rank: ', sprintf('%1.f', rank(AIC)), ')'), 
+        'html', color = 'darkgoldenrod', bold = T), 
+      cell_spec(
+        paste0(round(AIC, 2), ' (rank: ', sprintf('%1.f', rank(AIC)), ')'), 
+        'html', color = 'grey', italic = T))) %>% 
+  kbl('html', caption = '最优模型', escape = F, align = c('c', 'r', 'r')) %>% 
+  kable_styling(
+    bootstrap_options = c('striped', 'hover', 'condensed', 'responsive')) %>% 
+  kable_material() %>% 
+  scroll_box(height = '400px')
+```
+
+由于多项式线型模型无法列入时间序列参数和因子参数，故此`lm(Profit ~ poly(Bettor, degree = i, raw = TRUE) * ` `poly(Turnover, degree = i, raw = TRUE) * ` `poly(Won, degree = i, raw = TRUE) * ` `poly(Cancelled, degree = i, raw = TRUE) * ` `poly(Rebates, degree = i, raw = TRUE), smp2)`为最优模型，这儿我先添加内嵌模型。
+
+```{r, eval = FALSE}
+mm = lmer(Profit ~ 
+             poly(Bettor, degree = 2, raw = FALSE) * 
+             poly(Turnover, degree = 2, raw = FALSE) * 
+             poly(Won, degree = 2, raw = FALSE) * 
+             poly(Cancelled, degree = 2, raw = FALSE) * 
+             poly(Rebates, degree = 2, raw = FALSE) * (1/Date), smp2) %>% 
+    extractAIC %>% 
+    as_tibble %>% 
+    t %>% as_tibble %>% 
+    dplyr::rename(df = V1, AIC = V2) %>% 
+    mutate(.md = paste0('mprf_p07'), degree = 2, raw = FALSE) %>% 
+    dplyr::select(.md, degree, df, AIC)
+write_rds(p07, paste0('data/mprf', i, '_p07.rds'))
+
+
+
+llply(5, function(i) {
+    mprf = list(
+        {mm01 = lm(Profit ~ Date * 
+                       poly(Bettor, degree = i, raw = FALSE) * 
+                       poly(Turnover, degree = i, raw = FALSE) * 
+                       poly(Won, degree = i, raw = FALSE) * 
+                       poly(Cancelled, degree = i, raw = FALSE) * 
+                       poly(Rebates, degree = i, raw = FALSE), smp2) %>% 
+            extractAIC %>% 
+            as_tibble %>% 
+            t %>% as_tibble %>% 
+            dplyr::rename(df = V1, AIC = V2) %>% 
+            mutate(.md = paste0('mmprf_p01'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(mm01, paste0('data/mmprf', i, '_p01.rds'))}, 
+        {mm02 = lmer(Profit ~ Date * 
+                   poly(Bettor, degree = i, raw = FALSE) * 
+                       poly(Turnover, degree = i, raw = FALSE) * 
+                       poly(Won, degree = i, raw = FALSE) * 
+                       poly(Cancelled, degree = i, raw = FALSE) * 
+                     (1 / Date), smp2) %>% 
+            extractAIC %>% 
+            as_tibble %>% 
+            t %>% as_tibble %>% 
+            dplyr::rename(df = V1, AIC = V2) %>% 
+            mutate(.md = paste0('mmprf_p02'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(mm02, paste0('data/mmprf', i, '_p02.rds'))}, 
+        {mm03 = lm(Profit ~ Date * 
+                      poly(Bettor, degree = i, raw = FALSE) * 
+                      poly(Turnover, degree = i, raw = FALSE) * 
+                      poly(Won, degree = i, raw = FALSE) * 
+                      poly(Rebates, degree = i, raw = FALSE) * 
+                     (1 / Type), smp2) %>% 
+            extractAIC %>% 
+            as_tibble %>% 
+            t %>% as_tibble %>% 
+            dplyr::rename(df = V1, AIC = V2) %>% 
+            mutate(.md = paste0('mmprf_p03'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(mm03, paste0('data/mmprf', i, '_p03.rds'))}, 
+        {mm04 = lmer(Profit ~ Date * 
+                      poly(Bettor, degree = i, raw = FALSE) * 
+                      poly(Turnover, degree = i, raw = FALSE) * 
+                      poly(Cancelled, degree = i, raw = FALSE) * 
+                      poly(Rebates, degree = i, raw = FALSE) * 
+                       (1 / Date) * (1 / Type), smp2) %>% 
+            extractAIC %>% 
+            as_tibble %>% 
+            t %>% as_tibble %>% 
+            dplyr::rename(df = V1, AIC = V2) %>% 
+            mutate(.md = paste0('mmprf_p04'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p04, paste0('data/mmprf', i, '_p04.rds'))}, 
+        {mm05 = lm(Profit ~ Date * 
+                      poly(Bettor, degree = i, raw = FALSE) * 
+                      poly(Won, degree = i, raw = FALSE) * 
+                      poly(Cancelled, degree = i, raw = FALSE) * 
+                      poly(Rebates, degree = i, raw = FALSE) * 
+                     (Date / Type), smp2) %>% 
+            extractAIC %>% 
+            as_tibble %>% 
+            t %>% as_tibble %>% 
+            dplyr::rename(df = V1, AIC = V2) %>% 
+            mutate(.md = paste0('mmprf_p05'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p05, paste0('data/mmprf', i, '_p05.rds'))}, 
+        {mm06 = lm(Profit ~ Date * 
+                      poly(Bettor, degree = i, raw = FALSE) * 
+                      poly(Won, degree = i, raw = FALSE) * 
+                      poly(Cancelled, degree = i, raw = FALSE) * 
+                      poly(Rebates, degree = i, raw = FALSE) * 
+                     (Type / Date), smp2) %>% 
+            extractAIC %>% 
+            as_tibble %>% 
+            t %>% as_tibble %>% 
+            dplyr::rename(df = V1, AIC = V2) %>% 
+            mutate(.md = paste0('mmprf_p06'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p06, paste0('data/mmprf', i, '_p06.rds'))}, 
+        {mm07 = lm(Profit ~ Date * 
+                      poly(Bettor, degree = i, raw = FALSE) * 
+                      poly(Won, degree = i, raw = FALSE) * 
+                      poly(Cancelled, degree = i, raw = FALSE) * 
+                      poly(Rebates, degree = i, raw = FALSE) * 
+                     (1 + CondA * CondB | Sub) * (Type / Date), smp2) %>% 
+            extractAIC %>% 
+            as_tibble %>% 
+            t %>% as_tibble %>% 
+            dplyr::rename(df = V1, AIC = V2) %>% 
+            mutate(.md = paste0('mmprf_p07'), degree = i, raw = FALSE) %>% 
+            dplyr::select(.md, degree, df, AIC); 
+        write_rds(p06, paste0('data/mmprf', i, '_p07.rds'))}
+    ) %>% 
+        ldply %>% 
+        as_tibble
+
+mm000 = lm(Profit ~ Date * 
+              poly(Bettor, degree = 2, raw = FALSE) * 
+              poly(Won, degree = 2, raw = FALSE) * 
+              poly(Cancelled, degree = 2, raw = FALSE) * 
+              poly(Rebates, degree = 2, raw = FALSE) * 
+              (1 + Won * Cancelled | Bettor) * (Type / Date), smp2) %>% 
+    extractAIC
+write_rds(mm000, paste0('data/mm000.rds'))
+
+mm001 = lm(Profit ~ Date * 
+               poly(Bettor, degree = 2, raw = FALSE) * 
+               poly(Won, degree = 2, raw = FALSE) * 
+               poly(Cancelled, degree = 2, raw = FALSE) * 
+               poly(Rebates, degree = 2, raw = FALSE) * 
+               (1 + Won * Cancelled / Bettor) * (Type / Date), smp2) %>% 
+    extractAIC
+write_rds(mm001, paste0('data/mm001.rds'))
+
+    ## save files, easier to read.
+    #write_rds(mprf, paste0('data/mprf', i, '.rds'))
+})
+```
+
+<br>
+<br>
+
+## 混合模型
+
+<br>
+
+以下文献包含`多元相互式模型`、`多项式模型`、`多元内嵌模型`。
+
+- [混合线性模型的实现（更新20190607）](https://zhuanlan.zhihu.com/p/63092231)
+- [Linear Regression and group by in R](https://stackoverflow.com/a/12064463/3806250)
+- [Why do I get wildly different results for poly(raw=T) vs. poly()?](https://stats.stackexchange.com/a/31222/68357)
+
+![[*Linear Regression and group by in R*](https://stackoverflow.com/a/12064463/3806250)](figure/nested-polynomial-lm.png)
+
+```{r}
+## https://stackoverflow.com/a/24133767/3806250
+
+
+```
+
+<br>
+<br>
+
+## 时间序列模型
+
+<br>
+
+上个章节谈及最优三个模型，这儿咱们得先瞧瞧*图表3.1：每日观测值*每日观测值再决定数据多寡。
+
+```{r}
+
+```
+
+
+<br>
+<br>
+
+### 30天数据
+
+<br>
+
+```{r}
+##https://stackoverflow.com/questions/24133356/how-to-replicate-a-ddply-behavior-that-uses-a-custom-function-with-dplyr/24133767#24133767
+
+```
+
+<br>
+<br>
+
+### 40天数据
+
+<br>
+
+....
+
+<br>
+<br>
+
+# 绘图
+
+<br>
+
+## 投注人数
+
+<br>
+
+## 投注金额
+
+<br>
+
+## 中奖金额
+
+<br>
+
+## 撤单金额
+
+<br>
+
+## 返点金额
+
+<br>
+
+## 盈利
+
+<br>
+
+## 盈率
+
+<br>
+<br>
+
+# 结论
+
+<br>
+
+## 总结
+
+${\color{Black} \circledR} {\color{DarkGreen} \gamma} {\color{Red} \sigma} \; {\color{Blue} \xi} {\color{Red} \eta} {\color{Blue} g}$^[[Latex Equation](https://www.codecogs.com/latex/eqneditor.php)] 🎏^[[Emoji list](https://gist.github.com/rxaviers/7360908)]
+
+<br>
+
+## 附录
+
+```{r, warning = FALSE, results = 'asis'}
+suppressMessages(require('dplyr', quietly = TRUE))
+suppressMessages(require('magrittr', quietly = TRUE))
+suppressMessages(require('formattable', quietly = TRUE))
+suppressMessages(require('knitr', quietly = TRUE))
+suppressMessages(require('kableExtra', quietly = TRUE))
+
+sys1 <- devtools::session_info()$platform %>% 
+  unlist %>% data.frame(Category = names(.), session_info = .)
+rownames(sys1) <- NULL
+
+sys2 <- data.frame(Sys.info()) %>% mutate(Category = rownames(.)) %>% .[2:1]
+names(sys2)[2] <- c('Sys.info')
+rownames(sys2) <- NULL
+
+if (nrow(sys1) == 9 & nrow(sys2) == 8) {
+  sys2 %<>% rbind(., data.frame(
+  Category = 'Current time', 
+  Sys.info = paste(as.character(lubridate::now('Asia/Tokyo')), 'JST🗾')))
+} else {
+  sys1 %<>% rbind(., data.frame(
+  Category = 'Current time', 
+  session_info = paste(as.character(lubridate::now('Asia/Tokyo')), 'JST🗾')))
+}
+
+cbind(sys1, sys2) %>% 
+  kbl(caption = 'Additional session information:') %>% 
+  kable_styling(bootstrap_options = c('striped', 'hover', 'condensed', 'responsive')) %>% 
+  row_spec(9, bold = T, color = 'white', background = '#D7261E')
+```
+
+## 参考文献
+
+1) [Free themes for Bootstrap](https://bootswatch.com/3/)
+
+2) [R packages for optimal stratified sampling: a review and compared evaluation](https://www.researchgate.net/publication/327791484_R_packages_for_optimal_stratified_sampling_a_review_and_compared_evaluation/comments)
+
+3) [Use of models in SamplingStrata](https://cran.r-project.org/web/packages/SamplingStrata/vignettes/models.html)
+
+4) [Example of Using a Banner Image with RMarkdown](https://rpubs.com/thaufas/555157)
+
+5) [IN R MARKDOWN, How Can I add a background image (HTML output)?](https://stackoverflow.com/questions/60498668/in-r-markdown-how-can-i-add-a-background-image-html-output)
+
+6) [CSS Background Image Size Tutorial – How to Code a Full Page Background Image](https://www.freecodecamp.org/news/css-full-page-background-image-tutorial)
+
+---
+
+<span style='color:RoyalBlue'>**Powered by - Copyright® Intellectual Property Rights of <img src='figure/scibrokes_trading.jpg' width='24'> [Sςιβrοκεrs Trαdιηg®️](http://www.scibrokes.com)経営企業**</span>
+

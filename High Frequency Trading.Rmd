@@ -81,11 +81,15 @@ By refer to <span style='color:goldenrod'>*Ryo Eng Lian Hu (2017)*</span>^[refer
 
 <span style='color:goldenrod'>*binary.com Interview Question I - Interday High Frequency Trading*</span> suggest a better model for interday trading, <span style='color:goldenrod'>*binary.com Interview Question I - Multivariate GARCH Models*</span> compares the multivariate GARCH models. Now I try to fit the high-frequency univariate model into multivariate model for intraday trading.
 
+[一个量化交易策略师成长历程](https://www.jianshu.com/p/f6b0b91c530a) shared the author's experience. There has couple of papers for high-frequency quantitative trading.
+
 [Convert multivariate XTS to TS in R](https://stackoverflow.com/questions/44250867/convert-multivariate-xts-to-ts-in-r) using `wavethresh` package.
 
 # Data
 
 [An R interface to `zipline`](https://www.quantopian.com/posts/an-r-interface-to-zipline) introduce a r package `flyingfox` which is others than `Quandl` who provides a channel to get datasets. [Tushare Pro 新版发布，数据更稳定质量更好](http://tushare.org/classifying.html) is another data providing website. By the way, [金融阶 - 金融人才猎聘专家](https://www.jrjhr.com) is a recruitment website for financial market.
+
+[【邢不行|量化小讲堂系列20-Python量化入门】10年400倍策略分享（附视频逐行代码讲解](https://www.jianshu.com/p/5ecd088fc7bd) introduce a website [预测者网](https://www.yucezhe.com) and [一个量化交易策略师成长历程](https://www.jianshu.com/p/f6b0b91c530a) sharing alot of high-frequency trading models in Python language.
 
 I gather the tick-data via [FXCMTickData](https://github.com/fxcm/MarketData) for high frequency trading.
 
