@@ -18,7 +18,7 @@ output:
 
 <br>
 
-# 简介
+# Introduction
 
 <br>
 
@@ -45,12 +45,12 @@ rm(pkg)
 #sc <- spark_connect(master = 'local')
 ```
 
-当初在推广部门，**宋祖：宋组长**给个样本数据，我就尝试使用线性模型和时间序列`arima`模型分析了进粉业绩，详情请参考[阿里彩票 - 分析样本数据](https://rpubs.com/englianhu/ali)^[基于数据观测值太少^[[binary.com Interview Question I (Extention)](https://rpubs.com/englianhu/binary-Q1E)尝试分别使用`3个月`、`6个月`、`12个月`、`18个月`和`24个月`的数据，结果`12个月`的数据最为精准。]，所以暂时没有预测。]。然后转到运维部门分析了[阿里彩票 - 彩种报告](https://rpubs.com/englianhu/ali_bet_type)，只是基本分析彩种，将数据视觉化；此商业分析进一步使用混合线性模型分析数据，预测彩种盈利。
+
 
 <br>
 <br>
 
-# 数据
+# Platform
 
 <br>
 
