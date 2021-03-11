@@ -501,4 +501,5 @@ rm(sys1, sys2)
 
 ---
 
-<span style='color:RoyalBlue'>**Powered by - Copyright® Intellectual Property Rights of [<img src='www/scb_logo.jpg' width='64'>®](http://www.scibrokes.com)個人の経営企業**</span>
+<span style='color:RoyalBlue'>**Powered by - Copyright® Intellectual Property Rights of <img src='www/scb-logo3rs.jpg' width='18'> [Sςιβrοκεrs Trαdιηg ®️](http://www.scibrokes.com) 経営企業**</span>
+
