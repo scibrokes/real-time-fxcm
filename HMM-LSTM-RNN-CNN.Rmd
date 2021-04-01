@@ -1,0 +1,21 @@
+---
+title: "HMM, LSTM, RNN, CNN Statistical Models"
+author: "®γσ, Lian Hu"
+date: "4/1/2021"
+output: html_document
+---
+
+**Draft**
+
+Reference
+
+- [Discussion Posts](https://rpubs.com/priyankaigit/disc-wk4)
+- [Comparing time series forecasting models in action](http://rstudio-pubs-static.s3.amazonaws.com/15285_1260a766696d4960b9c63442a399831e.html)
+- [Airport Dash](https://rpubs.com/nabiilahardini/ts-flight)
+- [Time Series Analysis - Spring 2018](https://rpubs.com/hsafaie/381547)
+- [Using the `forecastHybrid` package](https://cran.r-project.org/web/packages/forecastHybrid/vignettes/forecastHybrid.html)
+- [Interest Rate Times Series Forecast Using LSTM Neural Network](https://rpubs.com/jwcb1025/int_rate_lstm?fbclid=IwAR2sRCrk2mxUx_1oKZuEwWcm2RX_BjRdkOMiVUAjoO7uTl57T5kQouj_GGo)
+- [rwanjohi/Time-series-forecasting-using-LSTM-in-R/LSTM Time series forecasting.R](https://github.com/rwanjohi/Time-series-forecasting-using-LSTM-in-R/blob/master/LSTM%20Time%20series%20forecasting.R?fbclid=IwAR3h9GTNkx4m7txM6uDCq0O2OgUjsbp1e6qUhOHYCaKF4ypRm6Kskldi-Es)
+- [Time series forecasting: from ARIMA to LSTM](https://stats.stackexchange.com/a/478638/68357)
+- [Is Prophet Really Better than ARIMA for Forecasting Time Series Data?](https://blog.exploratory.io/is-prophet-better-than-arima-for-forecasting-time-series-fa9ae08a5851)
+
