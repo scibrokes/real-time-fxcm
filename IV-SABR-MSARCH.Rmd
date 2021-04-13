@@ -1,0 +1,29 @@
+---
+title: "Implied Volatility, SABR, Markov Switching-Arch Statistical Models"
+author: "®γσ, Lian Hu"
+date: "4/1/2021"
+output: html_document
+---
+
+**Draft**
+
+Markov switching models (MSAR), also known as Hidden Markov Models (HMM)[About statsmodels](https://github.com/statsmodels/statsmodels)
+
+[Economics and quantitative methods, Statsmodels: State space models and the Kalman filter, Statsmodels: Markov switching dynamic regression and autoregression](http://www.chadfulton.com/software.html)
+
+Reference
+
+1) [Forecasting Risk with Markov-Switching GARCH Models - A Large-Scale Perfoamance Study](https://englianhu.files.wordpress.com/2021/04/wp-1618274429537.pdf?fbclid=IwAR2Zcm9Igp0VZVdQeQF3xx1gTkaYKqPGRGONrfWQCXIs0J93Bytjtoyzna4)
+
+2) [Economics and quantitative methods, Statsmodels: State space models and the Kalman filter, Statsmodels: Markov switching dynamic regression and autoregression](http://www.chadfulton.com/software.html)
+
+3) [Markov switching autoregression models](http://www.chadfulton.com/topics/markov_autoregression.html?fbclid=IwAR296sU99p_zlwbBetQmQTczHC8kN8WpsXTi7_CFBnrkqc1koh0CDRMwV7A)
+
+4) [About statsmodels](https://github.com/statsmodels/statsmodels)
+
+5) [Historical vs. Implied Options Volatility - Options Mechanics](https://www.youtube.com/watch?v=eBa-1pQEG0E)
+
+6) [Local vs Stochastic vs Implied Volatilities](https://www.youtube.com/watch?v=y4B4wSnXg6E)
+
+7) [波动率曲面 - 期权波动率建模实战指南 (高清)]()
+
