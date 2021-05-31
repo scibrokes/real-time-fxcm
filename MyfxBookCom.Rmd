@@ -60,6 +60,31 @@ lnk <- 'https://www.myfxbook.com/forex-brokers'
 
 [**王牌交易员社区.......... ☑ 持续更新中，敬请关注 ٩(•̮̮̃•̃)۶** -Scalping法(抢帽子)](https://sites.google.com/site/acedaytrader/training/scalping)
 
+## EliteQuant
+
+```
+A list of online resources for quantitative modeling, trading, portfolio management
+
+There are lots of other valuable online resources. We are not trying to be exhaustive. Please feel free to send a pull request if you believe something is worth recommending. A general rule of thumb for open source projects is having already received 100 stars on github.
+
+A list of online resources for quantitative modeling, trading, portfolio management
+
+There are lots of other valuable online resources. We are not trying to be exhaustive. Please feel free to send a pull request if you believe something is worth recommending. A general rule of thumb for open source projects is having already received 100 stars on github.
+
+Quantitative Trading Platform
+Trading System
+Quantitative Library
+Quantitative Model
+Trading API
+Data Source
+Cryptocurrency
+Companies
+Fintech
+Websites Forums Blogs
+```
+
+与查询更多详情，请查阅 <https://github.com/EliteQuant>。
+
 # 读取样本数据。
 
 ```{r, results = 'asis', warning = FALSE}
@@ -173,7 +198,7 @@ sys
 
 ## 参考文献
 
-01. []()
+01. [https://github.com/EliteQuant](https://github.com/EliteQuant)
 
 <br>
 
