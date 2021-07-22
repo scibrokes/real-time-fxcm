@@ -498,6 +498,7 @@ rm(sys1, sys2)
 12. [Modelling Exchange Rates using Regime Switching Models](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Modelling%20Exchange%20Rates%20using%20Regime%20Switching%20Models.pdf)
 13. [Financial Risk Modelling and Portfolio Optimization with R (2nd Edt)](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Financial%20Risk%20Modelling%20and%20Portfolio%20Optimization%20with%20R%20(2nd%20Edt).pdf)
 14. [量化交易 - 如何建立自己的算法交易事业](https://github.com/englianhu/data-analysis/blob/master/reference/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93%20-%20%E5%A6%82%E4%BD%95%E5%BB%BA%E7%AB%8B%E8%87%AA%E5%B7%B1%E7%9A%84%E7%AE%97%E6%B3%95%E4%BA%A4%E6%98%93%E4%BA%8B%E4%B8%9A.pdf)
+15. [Developing High-Frequency Equities Trading Models]()
 
 ---
 
