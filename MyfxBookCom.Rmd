@@ -199,6 +199,7 @@ sys
 ## 参考文献
 
 01. [https://github.com/EliteQuant](https://github.com/EliteQuant)
+02. [量化投资技术分析实战 - 解码股票与期货交易模型 (高清).pdf](reference/量化投资技术分析实战 - 解码股票与期货交易模型 (高清).pdf)
 
 <br>
 
