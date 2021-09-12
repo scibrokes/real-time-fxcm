@@ -1,5 +1,7 @@
 # Real Time FXCM
 
+[![Jekyll site CI](https://github.com/scibrokes/real-time-fxcm/actions/workflows/jekyll.yml/badge.svg)](https://github.com/scibrokes/real-time-fxcm/actions/workflows/jekyll.yml)
+
 ## 1. Intraday Data Collection
 
  - **FXCM Weekly Ticked Data** : You can get the tick data via [FXCMTickData](https://github.com/FXCMAPI/FXCMTickData) `All timestamps are in UTC`.
