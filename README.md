@@ -4,18 +4,18 @@
 
 ## 1. Intraday Data Collection
 
- - **FXCM Weekly Ticked Data** : You can get the tick data via [FXCMTickData](https://github.com/FXCMAPI/FXCMTickData) `All timestamps are in UTC`.
- - **Historical Data Downloader Basic** : you can get the historical price via [Historical Spreads](https://www.fxcm.com/uk/why-fxcm/execution/historical-spreads/)
+- **FXCM Weekly Ticked Data** : You can get the tick data via [FXCMTickData](https://github.com/FXCMAPI/FXCMTickData) `All timestamps are in UTC`.
+- **Historical Data Downloader Basic** : you can get the historical price via [Historical Spreads](https://www.fxcm.com/uk/why-fxcm/execution/historical-spreads/)
 
-  Besides, you can use my Web Application [**DataCollection**](https://beta.rstudioconnect.com/content/3153/) for high frequency algorithmic trading backtesting.
+Besides, you can use my Web Application [**DataCollection**](https://beta.rstudioconnect.com/content/3153/) for high frequency algorithmic trading backtesting.
 
-<img src='www/ice_video_20171113-013636.gif' width='360'>
+<img src='www/ice_video_20171113-013636.gif' width='240'>
 
 ## 2. High Frequency Algorithmic Trading
 
-  I tried to use intraday data...
+I tried to use intraday data...
   
-<img src='www/under_construction.jpg' width='360'>
+<img src='www/under_construction.jpg' width='240'>
 
 ## 3. Reference
 
@@ -27,4 +27,4 @@
 
 ---
 
-**Powered by - Copyright® Intellectual Property Rights of <img src='www/scb-logo3.jpg' width='18'> [Scibrokes®](http://www.scibrokes.com)個人の経営企業**
+<span style='color:RoyalBlue'>**Powered by - Copyright® Intellectual Property Rights of [<img src="www/Scibrokes.png" width="14"/> Sςιβrοκεrs Trαdιηg®](http://www.scibrokes.com) 個人の経営企業**</span>
