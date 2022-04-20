@@ -25,6 +25,7 @@ I tried to use intraday data...
 04. [原则 - 雷·达里奥](https://github.com/scibrokes/analyse-the-finance-and-stocks-price-of-bookmakers/blob/master/reference/%E5%8E%9F%E5%88%99%20-%20%E9%9B%B7%C2%B7%E8%BE%BE%E9%87%8C%E5%A5%A5.pdf)
 05. [Successful Algorithmic Trading](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Successful%20Algorithmic%20Trading.pdf)
 06. [量化交易学习-订单簿建模](https://zhuanlan.zhihu.com/p/499342831)
+07. [哪种量化策略在国内最有前途？](https://www.zhihu.com/question/68030592/answer/2239306330)
 
 ---
 
