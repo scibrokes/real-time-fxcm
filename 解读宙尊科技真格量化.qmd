@@ -1,0 +1,37 @@
+---
+title: '解读[宙尊科技](https://51zhenge.com)真格量化 - 高频量化交易策略'
+subtiltle: '[GitHub : Modeling High-Frequency Limit Order Book Dynamics Using Machine Learning](https://github.com/rorysroes/SGX-Full-OrderBook-Tick-Data-Trading-Strategy)'
+format: html
+---
+
+## Quarto
+
+
+
+## 参考文献
+
+- [知呼：量化交易的频谱分析与策略搭配规律](https://zhuanlan.zhihu.com/p/89404944) ❤️‍🔥
+- [知呼：【HFT系列】基于机器学习的动态高频限价订单簿框架（Tick数据）](https://zhuanlan.zhihu.com/p/37825746) ❤️‍🔥
+- [GitHub : Modeling High-Frequency Limit Order Book Dynamics Using Machine Learning](https://github.com/rorysroes/SGX-Full-OrderBook-Tick-Data-Trading-Strategy)
+- [GitHub : Use quicksort algorithm to find median](https://github.com/rorysroes/Fast_Algorithm_FFT)
+- [GitHub : Implement Option pricing using FFT](https://github.com/rorysroes/Option_Pricing_and_Parameter_Estimater)
+- [GitHub : Implement fast poisson solver algorithm](https://github.com/rorysroes/Fast_Algorithm_FPS_SSA)
+- [微信：【HFT系列】基于机器学习的动态高频限价订单簿框架（Tick数据）](https://mp.weixin.qq.com/s?__biz=MzAxNTc0Mjg0Mg==&mid=2653288278&idx=1&sn=73c6749fa89384391031c78a55768681&chksm=802e3543b759bc55fdaa974ac1d5a3c7a0a6ea11a272030dcb989978a96db6f2be8e5a0902cc#rd) ❤️‍🔥
+- [微信：想跑次高频策略？快来看看Numpy处理真格量化tick数据的技巧](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483653&idx=1&sn=fe5451556d034afdf79c54a5dcedaaaf&chksm=fdc601facab188ecc940a9c2e158d54bad16e3af6108327ae27cf5c42e6ac8d5d9dd5deaf5d7&scene=21#wechat_redirect)
+- [GitHub : poboquant](https://github.com/qmhedging/poboquant) ❤️‍🔥
+- [微信：品种太多迷人眼？-真格量化帮您速算多产品历史波动率](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483677&idx=1&sn=b30623a96ef5ce1e4a9db7e9386b7008&chksm=fdc601e2cab188f454e4726d52c9878bf93ef4e8f388f7146dc9c3f56a8f81f5135fedc6b3f3&scene=21#wechat_redirect)
+- [微信：纸上回测终觉浅，绝知交易要实盘--如何用真格量化快速接入实盘交易](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483703&idx=1&sn=84f5caae3891bfffe3fd11b89d539e43&chksm=fdc601c8cab188de535b5ba25e7f8ea260c8ae17e2109d864f03e9205042c6d06258e118e1c5&scene=21#wechat_redirect)
+- [宙尊科技](https://51zhenge.com)
+- [微信：“天下武功唯快不破”--常见高频交易策略简介](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483711&idx=1&sn=7e64a115ed2b866fa918f98c415cef44&chksm=fdc601c0cab188d68617963f9fed96df19a4007dead6583e3e1ba434a111d1df4c590dde8adc&scene=21#wechat_redirect)
+- [微信：Python还是C++？---您的策略应该用哪种编程语言](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483738&idx=1&sn=9f3d7f89453ee677e4253bd1c6f406b5&chksm=fdc601a5cab188b33fcedff807a89da4a3b245c34f3e71c4cf87105a9db4e3aea9b4d8086cc9&scene=21#wechat_redirect)
+- [微信：少年，我看你骨骼清奇，有些秘籍要传授与你](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483690&idx=1&sn=03e9e8bff3b556eeb61fa1c1b03fd3de&chksm=fdc601d5cab188c35490506ef9bf5d29e2f9ec943b63b18899b5b61f7c05b1847ccdd84d86ee&scene=21#wechat_redirect)
+- [微信：三十六计走为上--我们无法逆转未来，但我们可以撤单啊！](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483717&idx=1&sn=9b1eaba8b48c430db0c6c114dbde06c0&chksm=fdc601bacab188ac5b26e50f88c9ffd6792ae818d383313b783db6989189739112aa62d30daa&scene=21#wechat_redirect)
+- [微信：工作太忙错过牛市？这个神器帮您实现全市场自动盯盘](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483679&idx=1&sn=25b02b2685b48d0cc305b9bf43b0f17f&chksm=fdc601e0cab188f6ae89831e0701d0290dea244f601f3d945db0780fbbf898951f33780e2453&scene=21#wechat_redirect)
+- [微信：都在谈日赚192倍？真正赚钱的买期权策略曲线是这样的](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483675&idx=1&sn=ac6fb4cffc1cc3c65a73ef5c7313f056&chksm=fdc601e4cab188f2629b25c1d73497a0d148f5c97716664a89eae71989f9bbaac7b30a0c72f8&scene=21#wechat_redirect)
+- [微信：Python还是C++？---您的策略应该用哪种编程语言](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483738&idx=1&sn=9f3d7f89453ee677e4253bd1c6f406b5&chksm=fdc601a5cab188b33fcedff807a89da4a3b245c34f3e71c4cf87105a9db4e3aea9b4d8086cc9&scene=21#wechat_redirect)
+- [微信：从High-frequency到Low-latency-什么是低延迟交易？](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483940&idx=1&sn=48098145b9058482beba6de49526d167&chksm=fdc602dbcab18bcd7fcc753d98cfb1ad18d7c9d288d1313230f7bc01e094008174ca98037d9b&scene=21#wechat_redirect)
+- [微信：两篇研报暗算大盘？分析师之外您也许还放跑了一个帮凶](https://mp.weixin.qq.com/s?__biz=MzU4OTg0NjkyOA==&mid=2247483684&idx=1&sn=b8e7dd3a575da132fce29d6c853069a5&chksm=fdc601dbcab188cde0cabca0ed8830c08e1df4c601913bb87d2527f0106596660d784f89225b&scene=21#wechat_redirect)
+- []()
+- []()
+- []()
+

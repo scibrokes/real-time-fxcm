@@ -20,4 +20,4 @@ Reference
 - [Is Prophet Really Better than ARIMA for Forecasting Time Series Data?](https://blog.exploratory.io/is-prophet-better-than-arima-for-forecasting-time-series-fa9ae08a5851)
 - [A Comparison between LSTM and Facebook Prophet Models - A Financal Forecasting Case Study](https://github.com/scibrokes/real-time-fxcm/blob/master/reference/A%20Comparison%20between%20LSTM%20and%20Facebook%20Prophet%20Models%20-%20A%20Financal%20Forecasting%20Case%20Study.pdf)
 - [Stock Price Forecasting Using Time Series Analysis, Machine Learning and single layer neural network Models](https://rpubs.com/kapage/523169)
-
+- [深度学习做股票预测靠谱吗？](https://www.zhihu.com/question/54542998/answer/2361320437)
