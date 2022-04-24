@@ -26,7 +26,17 @@ I tried to use intraday data...
 05. [Successful Algorithmic Trading](https://github.com/englianhu/binary.com-interview-question/blob/master/reference/Successful%20Algorithmic%20Trading.pdf)
 06. [量化交易学习-订单簿建模](https://zhuanlan.zhihu.com/p/499342831)
 07. [哪种量化策略在国内最有前途？](https://www.zhihu.com/question/68030592/answer/2239306330)
-08. [量化交易的频谱分析与策略搭配规律](https://zhuanlan.zhihu.com/p/89404944) ❤️‍🔥
+08. [知呼：量化交易的频谱分析与策略搭配规律](https://zhuanlan.zhihu.com/p/89404944) ❤️‍🔥
+09. [知呼：量化投资方面，国内外都有哪些好的论坛或者网站？](https://www.zhihu.com/question/20874888/answer/61854182) ❤️‍🔥
+10. [韦纳软件 VeighNa](https://www.vnpy.com) ❤️‍🔥
+11. [GitHub : VeighNa - By Traders, For Traders.](https://github.com/vnpy/vnpy) ❤️‍🔥
+12. [最新33家国内百亿量化私募Hedge Fund核心人员背景简析（含千亿级）20220226](https://zhuanlan.zhihu.com/p/288461500)
+13. [中国量化私募：竞争全球，背水一战！](https://zhuanlan.zhihu.com/p/145113688)
+14. [GitHub : Tushare](https://github.com/waditu/tushare)
+15. [Tushare Pro版](https://tushare.pro)
+16. [Tushare](http://tushare.org)
+17. []()
+18. []()
 
 ---
 
