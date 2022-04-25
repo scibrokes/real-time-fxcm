@@ -1,0 +1,24 @@
+---
+title: "高频量化交易策略"
+author: "\U0001F409 ®γσ ξηg"
+date: '2022-04-25'
+output: html_document
+---
+
+
+
+
+
+- [知呼：量化交易的基本功能模块和计算模型如何设计？](https://www.zhihu.com/question/523316595)
+- [GitHub : trade_strategy 项目](https://github.com/zwdnet/trade_strategy)
+- [GitHub : stock 股价预测程序](https://github.com/zwdnet/stock)
+- [GitHub : zwdnet/MyQuant](https://github.com/zwdnet/MyQuant)
+- [GitHub : tradesys 自己建的交易系统框架](https://github.com/zwdnet/tradesys)
+- [GitHub : stockpractice 股票实盘操作训练代码及记录](https://github.com/zwdnet/stockpractice)
+- [赵瑜敏 - 量化投资分类](https://zwdnet.github.io/categories/%E9%87%8F%E5%8C%96%E6%8A%95%E8%B5%84)
+- [GitHub : zwdnet/etfdata](https://github.com/zwdnet/etfdata)
+- [GitHub : zwdnet/investment](https://github.com/zwdnet/investment)
+- [知呼：近些年热门的量化投资究竟是什么？](https://zhuanlan.zhihu.com/p/504637348)
+- [一名程序员眼里中国量化投资的未来](https://zhuanlan.zhihu.com/p/367319614)
+- []()
+- []()
