@@ -202,6 +202,8 @@ sys
 02. [量化投资技术分析实战 - 解码股票与期货交易模型 (高清).pdf](reference/量化投资技术分析实战 - 解码股票与期货交易模型 (高清).pdf)
 03. [透视高频交易 (高清).pdf](reference/透视高频交易 (高清).pdf)
 04. [汉全量化交易平台](https://isite.baidu.com/site/wjz3cd7y/700443da-49f1-41d4-8308-ce8dc8289041?fid=nH0LPW0YP1ndnjRdPW0vP1DzrjIxnWc1g1D&ch=4&bfid=fbuFw0cKP1HzRpH9NFR00Pt00f7XQB3azDy4rsY0000f5AvdN6000aR0000n8POAVTAO8lSq8qQgn784zTpkQtUp8OgrtnW7gia3LtpdsUSeoeveYVTVdQHalzYz1xQAtaYznj0o1TyvYsI4mbb&bd_vid=11140361868245810028&categoryId=&field=&orderBy=&title=%E9%A6%96%E9%A1%B5)
+05. [BigQuant AI 量化平台](https://bigquant.com)
+06. [BigQuant 提升实盘收益的仓位管理策略](https://zhuanlan.zhihu.com/p/497393864)
 
 <br>
 
