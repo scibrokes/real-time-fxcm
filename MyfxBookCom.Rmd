@@ -2,7 +2,7 @@
 title: "<span style='color:Red'>myfxbook.Com</span>"
 subtitle: "Forex Trading Platform Comparison 比较外汇交易平台"
 author: "[®γσ, ξηg Lian Hu](https://englianhu.github.io/) <img src='www/quantitative trader 1.jpg' width='13'> <img src='www/RYU.jpg' width='15'> <img src='www/ENG.jpg' width='24'> ® <img src='www/xueba1.jpg' width='14'>"
-date: "`r lubridate::today('Asia/Tokyo')`"
+date: "`r lubridate::today('Asia/Shanghai')`"
 output:
   html_document: 
     mathjax: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
@@ -204,6 +204,7 @@ sys
 04. [汉全量化交易平台](https://isite.baidu.com/site/wjz3cd7y/700443da-49f1-41d4-8308-ce8dc8289041?fid=nH0LPW0YP1ndnjRdPW0vP1DzrjIxnWc1g1D&ch=4&bfid=fbuFw0cKP1HzRpH9NFR00Pt00f7XQB3azDy4rsY0000f5AvdN6000aR0000n8POAVTAO8lSq8qQgn784zTpkQtUp8OgrtnW7gia3LtpdsUSeoeveYVTVdQHalzYz1xQAtaYznj0o1TyvYsI4mbb&bd_vid=11140361868245810028&categoryId=&field=&orderBy=&title=%E9%A6%96%E9%A1%B5)
 05. [BigQuant AI 量化平台](https://bigquant.com)
 06. [BigQuant 提升实盘收益的仓位管理策略](https://zhuanlan.zhihu.com/p/497393864)
+07. [准备学习下量化，发现市面上有很多量化平台，聚宽，米匡，BIGQUANT等等，大家使用感受怎么样？](https://www.zhihu.com/question/419359583)
 
 <br>
 
