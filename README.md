@@ -37,11 +37,12 @@ I tried to use intraday data...
 16. [Tushare](http://tushare.org)
 17. [中国期货市场量化交易(R与C++版) - 相关推荐](https://ebook365.org/B07MVZ4XP7)
 18. [金工量化优质书单推荐及下载](https://www.cxybb.com/article/m0_37639589/90765551)
-19. []()
+19. [近十年量化交易领域最重要的十本参考书是哪些？](https://www.zhihu.com/question/23857983)
 20. []()
 
 <br>
 
 ---
 
-<span style='color:RoyalBlue'>**[<img src="figure/Scibrokes.png" width="14"/> 世博量化® Sςιβrοκεrs Trαdιηg®](http://www.scibrokes.com)企业知识产权及版权所有，盗版必究。**</span>
+[<img src="www/Scibrokes.png" width="14"/> Sςιβrοκεrs Trαdιηg®](http://www.scibrokes.com)<br>
+<span style='color:RoyalBlue'>**[<img src="www/Scibrokes.png" width="14"/> 世博量化®](http://www.scibrokes.com)企业知识产权及版权所有，盗版必究。**</span>
