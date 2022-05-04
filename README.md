@@ -38,7 +38,7 @@ I tried to use intraday data...
 17. [中国期货市场量化交易(R与C++版) - 相关推荐](https://ebook365.org/B07MVZ4XP7)
 18. [金工量化优质书单推荐及下载](https://www.cxybb.com/article/m0_37639589/90765551)
 19. [近十年量化交易领域最重要的十本参考书是哪些？](https://www.zhihu.com/question/23857983)
-20. []()
+20. [量化一般用什么软件比较好，在哪里下载，还有一般量化的平台都有哪些呀？](https://www.zhihu.com/question/62413612)
 
 <br>
 

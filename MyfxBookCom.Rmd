@@ -205,6 +205,7 @@ sys
 05. [BigQuant AI 量化平台](https://bigquant.com)
 06. [BigQuant 提升实盘收益的仓位管理策略](https://zhuanlan.zhihu.com/p/497393864)
 07. [准备学习下量化，发现市面上有很多量化平台，聚宽，米匡，BIGQUANT等等，大家使用感受怎么样？](https://www.zhihu.com/question/419359583)
+08. [量化一般用什么软件比较好，在哪里下载，还有一般量化的平台都有哪些呀？](https://www.zhihu.com/question/62413612)
 
 <br>
 
