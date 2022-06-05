@@ -53,8 +53,6 @@ api = 'UL7EPVVEGDVC3TXC'
 
 options(warn = -1)
 rm(pkgs)
-
-conflict_prefer('filter', 'dplyr')
 ```
 
 # Introduction

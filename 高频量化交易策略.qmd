@@ -20,5 +20,5 @@ output: html_document
 - [GitHub : zwdnet/investment](https://github.com/zwdnet/investment)
 - [知呼：近些年热门的量化投资究竟是什么？](https://zhuanlan.zhihu.com/p/504637348)
 - [一名程序员眼里中国量化投资的未来](https://zhuanlan.zhihu.com/p/367319614)
-- []()
+- [知乎：高频量化交易为什么这么强调低延迟？](https://www.zhihu.com/question/511736350/answer/2511420377)
 - []()

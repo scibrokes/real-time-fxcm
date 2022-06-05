@@ -21,3 +21,8 @@ Reference
 - [A Comparison between LSTM and Facebook Prophet Models - A Financal Forecasting Case Study](https://github.com/scibrokes/real-time-fxcm/blob/master/reference/A%20Comparison%20between%20LSTM%20and%20Facebook%20Prophet%20Models%20-%20A%20Financal%20Forecasting%20Case%20Study.pdf)
 - [Stock Price Forecasting Using Time Series Analysis, Machine Learning and single layer neural network Models](https://rpubs.com/kapage/523169)
 - [深度学习做股票预测靠谱吗？](https://www.zhihu.com/question/54542998/answer/2361320437)
+
+---
+
+[<img src="www/Scibrokes.png" height="14"/> Sςιβrοκεrs Trαdιηg®](http://www.scibrokes.com)<br>
+<span style='color:RoyalBlue'>**[<img src="www/Scibrokes.png" height="14"/> 世博量化®](http://www.scibrokes.com)企业知识产权及版权所有，盗版必究。**</span>
