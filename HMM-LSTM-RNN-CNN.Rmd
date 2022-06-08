@@ -7,7 +7,14 @@ output: html_document
 
 **Draft**
 
-Reference
+> **如何缓解量化交易中存在的"低信噪比"现象？**
+金融市场的数据信噪比特别低,得到信息更多的背后是得到了更多的噪音。举例来说：假如获得了100个单位信息，但是其中有90单位信息是噪音，剩下的10单位是我们真正想要获得的信息。噪音会导致构建的模型变得容易过拟合，这也是很多回测非常好的策略实盘失效的原因。如果能缓解量化交易中存在的"低信噪比"，就可以进一步模型的精度。<br><br>[*首先，你得有指标度量信噪比。然后，下单数量应该与信噪比成正比*]{style="color:RoyalBlue"}
+
+引用：[如何缓解量化交易中存在的"低信噪比"现象？](https://www.zhihu.com/question/534058888)
+
+
+
+# 参考文献
 
 - [Discussion Posts](https://rpubs.com/priyankaigit/disc-wk4)
 - [Comparing time series forecasting models in action](http://rstudio-pubs-static.s3.amazonaws.com/15285_1260a766696d4960b9c63442a399831e.html)
@@ -21,6 +28,9 @@ Reference
 - [A Comparison between LSTM and Facebook Prophet Models - A Financal Forecasting Case Study](https://github.com/scibrokes/real-time-fxcm/blob/master/reference/A%20Comparison%20between%20LSTM%20and%20Facebook%20Prophet%20Models%20-%20A%20Financal%20Forecasting%20Case%20Study.pdf)
 - [Stock Price Forecasting Using Time Series Analysis, Machine Learning and single layer neural network Models](https://rpubs.com/kapage/523169)
 - [深度学习做股票预测靠谱吗？](https://www.zhihu.com/question/54542998/answer/2361320437)
+- [如何缓解量化交易中存在的"低信噪比"现象？](https://www.zhihu.com/question/534058888)
+
+<br><br>
 
 ---
 

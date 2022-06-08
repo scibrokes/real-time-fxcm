@@ -23,8 +23,9 @@ output:
 <br>
 
 ```{r message=FALSE, warning=FALSE, results='asis'}
-if(!require('BBmisc')) {install.packages('BBmisc', dependencies = TRUE, 
-                                         INSTALL_opts = '--no-lock')}
+if(!require('BBmisc')) {
+  install.packages('BBmisc', dependencies = TRUE, INSTALL_opts = '--no-lock')
+  }
 require('BBmisc')
 pkg <- c('plyr', 'tidyverse', 'magrittr', 'readr', 'readxl', 'tidyr', 'MASS', 
          'knitr', 'kableExtra', 'forecast', 'formattable', 'DT', 'echarts4r', 
@@ -36,6 +37,10 @@ pkg <- c('plyr', 'tidyverse', 'magrittr', 'readr', 'readxl', 'tidyr', 'MASS',
 suppressAll(lib(pkg))
 rm(pkg)
 #sc <- spark_connect(master = 'local')
+
+conflict_prefer('filter', 'dplyr')
+conflict_prefer('collapse', 'dplyr')
+conflict_prefer('mutate', 'dplyr')
 
 ## 
 lnk <- 'https://www.myfxbook.com/forex-brokers'
@@ -84,6 +89,32 @@ Websites Forums Blogs
 ```
 
 与查询更多详情，请查阅 <https://github.com/EliteQuant>。
+
+## 其他平台
+
+>- 如果你会编写**通达信选股公式**，那么这已经就是一种量化思维。<br>- 能24小时盯盘当然是可行。**博森量化**机器人可以规避个人情绪，24小时自动交易~~
+
+引用：[知乎：个人做量化交易是否可行呢？](https://www.zhihu.com/question/529408913)
+
+>上海盈首信息科技有限公司总部位于中国金融中心上海。核心团队由一大批人工智能开发专业人士和证券行业资深研发专业人士组成。核心研究人员均拥有浙江大学、中国人民大学、哈佛大学、威尔士大学等知名大学学位。2005年至今，一直从事人工智能量化交易AI模型的研究、设计与开发，并在2006年实现了世界一流水平的量化模型回测年化回报率超过百分之几百。
+
+作者：阿杰说量化
+链接：https://www.zhihu.com/question/529408913/answer/2455065197
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+> 有的券商是会提供量化交易软件的，这样开户做量化就一条龙服务了，找客户经理，不仅佣金利率申请可以申请到比较优惠的水平，关于量化软件方面比较专业的问题也可以直接通过客户经理对接到技术部门的老师。现在券商做的量化软件有PTRADE和QMT，有专业和非专业两个版本，可以满足不同专业程度的需求，如果只想做做网格交易，篮子交易，条件单的，可以让客户经理帮忙申请普通版本，如果是需要自己编写程序，可以联系客户经理申请专业版本，根据自己需求来~~
+
+作者：理财顾问刘经理
+链接：https://www.zhihu.com/question/534517758/answer/2504117066
+来源：知乎
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+
+> 国内有一款（免费的）实盘量化交易平台，叫"**无限易**"，大概长这个样子：
+
+<img src='www/无限易 01.jpg' width='240'>
+
+[量化交易工具你会选择哪个平台？](https://www.zhihu.com/question/534517758)
 
 # 读取样本数据。
 
