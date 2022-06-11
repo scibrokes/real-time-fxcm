@@ -504,6 +504,11 @@ rm(sys1, sys2)
 16. [JPMorgan最新：量子机器学习的金融应用](https://zhuanlan.zhihu.com/p/424053731) ([Quantum Machine Learning for Finance.pdf](Quantum Machine Learning for Finance.pdf))
 17. [知乎：高频量化交易为什么这么强调低延迟？](https://www.zhihu.com/question/511736350/answer/2511420377)
 18. [如何缓解量化交易中存在的"低信噪比"现象？](https://www.zhihu.com/question/534058888)
+19. [我叫文辉，一位一直从事于CPU行业的IC工程师](https://www.wenhui.space/tags/cpu)
+20. [issuu 超标量处理器设计 姚永斌编著 Sample](https://issuu.com/xiuxiuebook/docs/____________________________________e8d42263cfc20b)
+21.
+22.
+23. 
 
 ---
 
