@@ -30,6 +30,7 @@ output: html_document
 - [深度学习做股票预测靠谱吗？](https://www.zhihu.com/question/54542998/answer/2361320437)
 - [如何缓解量化交易中存在的"低信噪比"现象？](https://www.zhihu.com/question/534058888)
 - [R语言隐马尔可夫模型HMM连续序列重要性重抽样CSIR估计随机波动率模型SV分析股票收益率时间序列](http://tecdat.cn/r%e8%af%ad%e8%a8%80%e9%9a%90%e9%a9%ac%e5%b0%94%e5%8f%af%e5%a4%ab%e6%a8%a1%e5%9e%8bhmm%e8%bf%9e%e7%bb%ad%e5%ba%8f%e5%88%97%e9%87%8d%e8%a6%81%e6%80%a7%e9%87%8d%e6%8a%bd%e6%a0%b7csir%e4%bc%b0%e8%ae%a1)
+- [一文搞懂HMM（隐马尔可夫模型）](https://www.cnblogs.com/skyme/p/4651331.html)
 
 <br><br>
 
