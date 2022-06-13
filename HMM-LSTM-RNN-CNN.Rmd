@@ -31,6 +31,11 @@ output: html_document
 - [如何缓解量化交易中存在的"低信噪比"现象？](https://www.zhihu.com/question/534058888)
 - [R语言隐马尔可夫模型HMM连续序列重要性重抽样CSIR估计随机波动率模型SV分析股票收益率时间序列](http://tecdat.cn/r%e8%af%ad%e8%a8%80%e9%9a%90%e9%a9%ac%e5%b0%94%e5%8f%af%e5%a4%ab%e6%a8%a1%e5%9e%8bhmm%e8%bf%9e%e7%bb%ad%e5%ba%8f%e5%88%97%e9%87%8d%e8%a6%81%e6%80%a7%e9%87%8d%e6%8a%bd%e6%a0%b7csir%e4%bc%b0%e8%ae%a1)
 - [一文搞懂HMM（隐马尔可夫模型）](https://www.cnblogs.com/skyme/p/4651331.html)
+- [PYTHON用RNN循环神经网络：LSTM长期记忆、GRU门循环单元、回归和ARIMA对COVID-19新冠疫情新增人数时间序列预测](http://tecdat.cn/python%e7%94%a8rnn%e5%be%aa%e7%8e%af%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c%ef%bc%9alstm%e9%95%bf%e6%9c%9f%e8%ae%b0%e5%bf%86%e3%80%81gru%e9%97%a8%e5%be%aa%e7%8e%af%e5%8d%95%e5%85%83%e3%80%81%e5%9b%9e)
+- [用于NLP的PYTHON：使用KERAS的多标签文本LSTM神经网络分类](http://tecdat.cn/%e7%94%a8%e4%ba%8enlp%e7%9a%84python%ef%bc%9a%e4%bd%bf%e7%94%a8keras%e7%9a%84%e5%a4%9a%e6%a0%87%e7%ad%be%e6%96%87%e6%9c%aclstm%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c%e5%88%86%e7%b1%bb)
+- [PYTHON用于NLP的SEQ2SEQ模型实例:用KERAS实现神经网络机器翻译](http://tecdat.cn/python%e7%94%a8%e4%ba%8enlp%e7%9a%84seq2seq%e6%a8%a1%e5%9e%8b%e5%ae%9e%e4%be%8b%e7%94%a8keras%e5%ae%9e%e7%8e%b0%e7%a5%9e%e7%bb%8f%e6%9c%ba%e5%99%a8%e7%bf%bb%e8%af%91)
+- []()
+- []()
 
 <br><br>
 
