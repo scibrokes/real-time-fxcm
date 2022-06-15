@@ -56,6 +56,7 @@ rm(pkgs)
 
 conflict_prefer('filter', 'dplyr')
 conflict_prefer('mutate', 'dplyr')
+conflict_prefer('rename', "dplyr")
 ```
 
 # Introduction
