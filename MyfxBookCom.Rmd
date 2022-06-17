@@ -46,9 +46,6 @@ conflict_prefer('mutate', 'dplyr')
 lnk <- 'https://www.myfxbook.com/forex-brokers'
 ```
 
-
-
-<br>
 <br>
 
 # 外汇交易平台
@@ -149,7 +146,6 @@ smp %>% glimpse
 <s>上图</s>
 
 <br>
-<br>
 
 # 统计模型
 
@@ -240,6 +236,7 @@ sys
 09. [知乎：高频量化交易为什么这么强调低延迟？](https://www.zhihu.com/question/511736350/answer/2511420377)
 10) [PYTHON中用PYTORCH机器学习神经网络分类预测银行客户流失模型](http://tecdat.cn/python%e4%b8%ad%e7%94%a8pytorch%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0%e5%88%86%e7%b1%bb%e9%a2%84%e6%b5%8b%e9%93%b6%e8%a1%8c%e5%ae%a2%e6%88%b7%e6%b5%81%e5%a4%b1%e6%a8%a1%e5%9e%8b)
 11) [用R语言实现神经网络预测股票实例](http://tecdat.cn/%e7%94%a8r%e8%af%ad%e8%a8%80%e5%ae%9e%e7%8e%b0%e7%a5%9e%e7%bb%8f%e7%bd%91%e7%bb%9c%e9%a2%84%e6%b5%8b%e8%82%a1%e7%a5%a8%e5%ae%9e%e4%be%8b)
+12) [python期货量化交易平台(python量化哪个平台可以回测模拟实盘还不要钱)](http://www.daimazhu.com/etagid31875b0)
 
 <br>
 
