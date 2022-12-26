@@ -1,27 +1,27 @@
-# Real Time FXCM
+# FXCM 量化对冲实时数据
 
 ---
 
-[<img src='www/RStudioCloud.png' height='20'>](https://rstudio.cloud) [<img src='www/RStudioCom2.png' height='20'>](https://community.rstudio.com/new-topic?category=shiny&tags=shiny) [![](www/shiny-badge.svg)](https://www.shinyapps.io)
+[<img src='文艺坊图库/RStudioCloud.png' height='20'>](https://rstudio.cloud) [<img src='文艺坊图库/RStudioCom2.png' height='20'>](https://community.rstudio.com/new-topic?category=shiny&tags=shiny) [![](文艺坊图库/shiny-badge.svg)](https://www.shinyapps.io)
 
 <br>
 
-## 1. Intraday Data Collection
+## 1. 采实时日内汇价
 
 - **FXCM Weekly Ticked Data** : You can get the tick data via [FXCMTickData](https://github.com/FXCMAPI/FXCMTickData) `All timestamps are in UTC`.
-- **Historical Data Downloader Basic** : you can get the historical price via [Historical Spreads](https://www.fxcm.com/uk/why-fxcm/execution/historical-spreads/)
+- **Historical Data Downloader Basic** : 点击[Historical Spreads](https://www.fxcm.com/uk/why-fxcm/execution/historical-spreads)获取历史汇价数据。
 
-Besides, you can use my Web Application [**DataCollection**](https://beta.rstudioconnect.com/content/3153/) for high frequency algorithmic trading backtesting.
+此外，也可点击[**DataCollection**](https://beta.rstudioconnect.com/content/3153)获取历史汇价数据，回测并筛选最优统计模型，再进行交易。
 
-<img src='www/ice_video_20171113-013636.gif' width='240'>
+<img src='文艺坊图库/ice_video_20171113-013636.gif' width='240'>
 
-## 2. High Frequency Algorithmic Trading
+## 2. 高频量化自动演算交易
 
-I tried to use intraday data...
+采集日内汇价...
   
-<img src='www/under_construction.jpg' width='240'>
+<img src='文艺坊图库/under_construction.jpg' width='240'>
 
-## 3. Reference
+## 3. 参考资源
 
 01. [binary.com : Job Application - Quantitative Analyst](https://github.com/englianhu/binary.com-interview-question) ❤️‍🔥
 02. [如何用R语言开始量化投资](https://github.com/scibrokes/real-time-fxcm/blob/master/reference/%E5%A6%82%E4%BD%95%E7%94%A8R%E8%AF%AD%E8%A8%80%E5%BC%80%E5%A7%8B%E9%87%8F%E5%8C%96%E6%8A%95%E8%B5%84.pdf)
@@ -50,5 +50,5 @@ I tried to use intraday data...
 
 ---
 
-[<img src="文艺图库/Scibrokes.png" height="14"/> Sςιβrοκεrs Trαdιηg®](http://www.scibrokes.com)<br>
-<span style='color:RoyalBlue'>**[<img src="文艺图库/Scibrokes.png" height="14"/> 世博量化®](http://www.scibrokes.com)企业知识产权及版权所有，盗版必究。**</span>
+[<img src="文艺坊图库/Scibrokes.png" height="14"/> Sςιβrοκεrs Trαdιηg®](http://www.scibrokes.com)<br>
+<span style='color:RoyalBlue'>**[<img src="文艺坊图库/Scibrokes.png" height="14"/> 世博量化®](http://www.scibrokes.com)企业知识产权及版权所有，盗版必究。**</span>
