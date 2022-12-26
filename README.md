@@ -4,9 +4,8 @@
 
 [<img src='文艺坊图库/RStudioCloud.png' height='20'>](https://rstudio.cloud) [<img src='文艺坊图库/RStudioCom2.png' height='20'>](https://community.rstudio.com/new-topic?category=shiny&tags=shiny) [![](文艺坊图库/shiny-badge.svg)](https://www.shinyapps.io)
 
-<br>
-
-春秋战国《礼记.经解》<br>
+**大秦赋 (Chinese Emperor)**<br>
+春秋战国*《礼记.经解》*<br>
 孔子曰：『君子慎始，差若毫厘，缪以千里。』
 
 ## 1. 采实时日内汇价
