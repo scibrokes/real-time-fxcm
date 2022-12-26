@@ -14,7 +14,7 @@
 - ticked data：委托挂单数据（毫秒计：差之毫厘，失之千里）
 - ticked data price：委托挂单报价（毫秒计：差之毫厘，失之千里）
 - [什么是Tick 数据？](https://blog.csdn.net/weixin_42219751/article/details/98870005)
-- **FXCM每周委托挂单数据**：点击[FXCMTickData](https://github.com/FXCMAPI/FXCMTickData) `获取历史委托挂单汇价（汇价数据时间以GMT+0为准）`.
+- **FXCM每周委托挂单数据**：点击[FXCMTickData](https://github.com/FXCMAPI/FXCMTickData) 获取历史委托挂单汇价（汇价数据默认时间为🇬🇧`GMT+0`）。
 - **Historical Data Downloader Basic** : 点击[Historical Spreads](https://www.fxcm.com/uk/why-fxcm/execution/historical-spreads)获取历史汇价数据。
 
 此外，也可点击[**DataCollection**](https://beta.rstudioconnect.com/content/3153)获取历史汇价数据，回测并筛选最优统计模型，再进行交易。
