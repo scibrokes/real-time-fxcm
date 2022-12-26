@@ -5,14 +5,15 @@
 [<img src='文艺坊图库/RStudioCloud.png' height='20'>](https://rstudio.cloud) [<img src='文艺坊图库/RStudioCom2.png' height='20'>](https://community.rstudio.com/new-topic?category=shiny&tags=shiny) [![](文艺坊图库/shiny-badge.svg)](https://www.shinyapps.io)
 
 **大秦赋 (Chinese Emperor)**<br>
-春秋战国*《礼记.经解》*<br>
+春秋战国《*礼记•经解*》<br>
 孔子曰：『君子慎始，差若毫厘，缪以千里。』
-
-## 1. 采实时日内汇价
 
 - ticked data：委托挂单数据（毫秒计：差之毫厘，失之千里）
 - ticked data price：委托挂单报价（毫秒计：差之毫厘，失之千里）
 - [什么是Tick 数据？](https://blog.csdn.net/weixin_42219751/article/details/98870005)
+
+## 1. 采实时日内汇价
+
 - **FXCM每周委托挂单数据**：点击[FXCMTickData](https://github.com/FXCMAPI/FXCMTickData) 获取历史委托挂单汇价（汇价数据默认时间为🇬🇧`GMT+0`）。
 - **Historical Data Downloader Basic** : 点击[Historical Spreads](https://www.fxcm.com/uk/why-fxcm/execution/historical-spreads)获取历史汇价数据。
 
