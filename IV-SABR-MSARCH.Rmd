@@ -27,6 +27,8 @@ Reference
 
 7) [波动率曲面 - 期权波动率建模实战指南 (高清)]()
 
+8) [Deriv.com - Interday High Frequency Trading Models Comparison Blooper](https://rpubs.com/englianhu/binary-Q1Inter-HFT)
+
 
 ---
 
